@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos en la Web</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 50%;
+            margin: 20px auto;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Datos en la Web</h1>
+    <table id="tabla-datos">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Valor</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos se agregarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        // Cargar el archivo JSON
+        fetch('datos.json')
+            .then(response => response.json())
+            .then(data => {
+                const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+                data.forEach(fila => {
+                    const nuevaFila = tabla.insertRow();
+                    Object.values(fila).forEach(valor => {
+                        const nuevaCelda = nuevaFila.insertCell();
+                        nuevaCelda.textContent = valor;
+                    });
+                });
+            })
+            .catch(error => console.error('Error al cargar los datos:', error));
+    </script>
+</body>
+</html>
