@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journals Metadata - FFPW</title>
+    <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -72,28 +72,16 @@
         }
 
         .pagination button {
-            padding: 10px 15px;
+            padding: 10px;
             margin: 5px;
             border: none;
             background-color: #007bff;
             color: white;
             cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-
-        .pagination button:hover {
-            background-color: #0056b3;
-        }
-
-        .pagination button.active {
-            background-color: #0056b3;
-            cursor: default;
         }
 
         .pagination button.disabled {
             background-color: #ddd;
-            color: #666;
             cursor: not-allowed;
         }
     </style>
@@ -103,7 +91,7 @@
         <img src="image/icon.jpg" alt="ICON">
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
-    <h1>Journals Metadata - FFPW</h1>
+    <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
     <table id="tabla-datos">
         <thead>
             <tr>
@@ -122,15 +110,15 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        const rowsPerPage = 50;
-        const maxVisiblePages = 5;
-        let currentPage = 1;
-        let filteredData = [];
-        let originalData = [];
+        const rowsPerPage = 50; // Maximum rows per page
+        let currentPage = 1; // Current page number
+        let filteredData = []; // Filtered rows
+        let originalData = []; // Original dataset
 
+        // Function to render rows for the current page
         function renderTableRows(data) {
             const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
+            tableBody.innerHTML = ''; // Clear table rows
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = Math.min(startIndex + rowsPerPage, data.length);
 
@@ -143,25 +131,16 @@
             }
         }
 
+        // Function to update pagination buttons
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
-            paginationDiv.innerHTML = '';
+            paginationDiv.innerHTML = ''; // Clear existing pagination
             const totalPages = Math.ceil(totalRows / rowsPerPage);
-            const halfVisiblePages = Math.floor(maxVisiblePages / 2);
 
-            let startPage = Math.max(1, currentPage - halfVisiblePages);
-            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-            // Adjust start page if near the end
-            if (endPage - startPage + 1 < maxVisiblePages) {
-                startPage = Math.max(1, endPage - maxVisiblePages + 1);
-            }
-
-            // Add Previous Button
+            // Add Previous button
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
             prevButton.disabled = currentPage === 1;
-            prevButton.classList.add(currentPage === 1 ? 'disabled' : '');
             prevButton.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
@@ -171,11 +150,10 @@
             });
             paginationDiv.appendChild(prevButton);
 
-            // Add Page Buttons
-            for (let i = startPage; i <= endPage; i++) {
+            // Add page buttons
+            for (let i = 1; i <= totalPages; i++) {
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
-                pageButton.classList.add(currentPage === i ? 'active' : '');
                 pageButton.disabled = currentPage === i;
                 pageButton.addEventListener('click', () => {
                     currentPage = i;
@@ -185,11 +163,10 @@
                 paginationDiv.appendChild(pageButton);
             }
 
-            // Add Next Button
+            // Add Next button
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
             nextButton.disabled = currentPage === totalPages;
-            nextButton.classList.add(currentPage === totalPages ? 'disabled' : '');
             nextButton.addEventListener('click', () => {
                 if (currentPage < totalPages) {
                     currentPage++;
@@ -200,6 +177,7 @@
             paginationDiv.appendChild(nextButton);
         }
 
+        // Function to apply filters
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
@@ -214,11 +192,12 @@
                 });
             });
 
-            currentPage = 1;
+            currentPage = 1; // Reset to first page
             renderTableRows(filteredData);
             updatePagination(filteredData.length);
         }
 
+        // Fetch data and initialize table
         fetch('datos.json')
             .then(response => response.json())
             .then(data => {
@@ -227,6 +206,7 @@
                 renderTableRows(filteredData);
                 updatePagination(filteredData.length);
 
+                // Attach filter functionality
                 document.querySelectorAll('.filter-input').forEach(input => {
                     input.addEventListener('input', filterData);
                 });
