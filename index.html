@@ -85,18 +85,18 @@
                 </th>
                 <th>
                     <input class="filter-input" type="text" placeholder="">
-                    Publication Year
+                    Year
                 </th>
                 <th>
                     <input class="filter-input" type="text" placeholder="">
                     Category
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="">
+                    <input class="filter-input" type="number" placeholder="">
                     Impact Factor
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="">
+                    <input class="filter-input" type="number" placeholder="">
                     Article Influence Score
                 </th>
                 <th>
@@ -140,7 +140,13 @@
                             const cell = row.cells[columnIndex];
                             if (cell) {
                                 const cellValue = cell.textContent.toLowerCase();
-                                row.style.display = cellValue.includes(filterValue) ? '' : 'none';
+                                if (input.type === 'number') {
+                                    const numericFilter = parseFloat(input.value);
+                                    const cellNumber = parseFloat(cell.textContent);
+                                    row.style.display = isNaN(numericFilter) || isNaN(cellNumber) || cellNumber >= numericFilter ? '' : 'none';
+                                } else {
+                                    row.style.display = cellValue.includes(filterValue) ? '' : 'none';
+                                }
                             }
                         });
                     });
