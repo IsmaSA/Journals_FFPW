@@ -95,12 +95,12 @@
     <table id="tabla-datos">
         <thead>
             <tr>
-                <th><input class="filter-input" type="text" placeholder="">Journal Name</th>
-                <th><input class="filter-input" type="text" placeholder="">Year</th>
-                <th><input class="filter-input" type="text" placeholder="">Category</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Name">Journal Name</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Year">Publication Year</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Category">Category</th>
                 <th><input class="filter-input" type="number" placeholder="Min Value">Impact Factor</th>
-                <th><input class="filter-input" type="number" placeholder="Min Value">Article Influence Score</th>
-                <th><input class="filter-input" type="text" placeholder="">Database</th>
+                <th><input class="filter-input" type="number" placeholder="Min Value">Index Score</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Database">Database</th>
             </tr>
         </thead>
         <tbody>
@@ -110,11 +110,12 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        const rowsPerPage = 50;
-        let currentPage = 1;
-        let filteredData = [];
-        let originalData = [];
+        const rowsPerPage = 50; // Maximum rows per page
+        let currentPage = 1; // Current page number
+        let filteredData = []; // Filtered rows
+        let originalData = []; // Original dataset
 
+        // Function to render rows for the current page
         function renderTableRows(data) {
             const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
@@ -130,6 +131,7 @@
             }
         }
 
+        // Function to update pagination buttons
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
@@ -172,6 +174,7 @@
             paginationDiv.appendChild(nextButton);
         }
 
+        // Function to apply filters
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
@@ -186,11 +189,12 @@
                 });
             });
 
-            currentPage = 1;
+            currentPage = 1; // Reset to first page
             renderTableRows(filteredData);
             updatePagination(filteredData.length);
         }
 
+        // Fetch data and initialize table
         fetch('datos.json')
             .then(response => response.json())
             .then(data => {
