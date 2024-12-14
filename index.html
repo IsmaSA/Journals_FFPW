@@ -7,7 +7,7 @@
     <style>
         /* General Body Styling */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f5f5f5;
@@ -135,7 +135,6 @@
             width: 100%;
             font-size: 12px;
         }
-
     </style>
 </head>
 <body>
@@ -147,12 +146,12 @@
     <table id="tabla-datos">
         <thead>
             <tr>
-                <th><input class="filter-input" type="text" placeholder="">Journal Name</th>
-                <th><input class="filter-input" type="text" placeholder="">Year</th>
-                <th><input class="filter-input" type="text" placeholder="">Category</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Name">Journal Name</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Year">Publication Year</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Category">Category</th>
                 <th><input class="filter-input" type="number" placeholder="Min Value">Impact Factor</th>
-                <th><input class="filter-input" type="number" placeholder="Min Value">Article Influence Score</th>
-                <th><input class="filter-input" type="text" placeholder="">Database</th>
+                <th><input class="filter-input" type="number" placeholder="Min Value">Index Score</th>
+                <th><input class="filter-input" type="text" placeholder="Filter by Database">Database</th>
             </tr>
         </thead>
         <tbody>
@@ -171,6 +170,7 @@
         let filteredData = [];
         let originalData = [];
 
+        // Function to render rows
         function renderTableRows(data) {
             const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
@@ -186,6 +186,7 @@
             }
         }
 
+        // Function to update pagination
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
@@ -229,6 +230,7 @@
             paginationDiv.appendChild(nextButton);
         }
 
+        // Filter Function
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
@@ -248,6 +250,7 @@
             updatePagination(filteredData.length);
         }
 
+        // Fetch data
         fetch('datos.json')
             .then(response => response.json())
             .then(data => {
