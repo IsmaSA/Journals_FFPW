@@ -148,9 +148,16 @@
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(totalRows / rowsPerPage);
             const halfVisiblePages = Math.floor(maxVisiblePages / 2);
-            const startPage = Math.max(1, currentPage - halfVisiblePages);
-            const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
+            let startPage = Math.max(1, currentPage - halfVisiblePages);
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            // Adjust start page if near the end
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            // Add Previous Button
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
             prevButton.disabled = currentPage === 1;
@@ -164,6 +171,7 @@
             });
             paginationDiv.appendChild(prevButton);
 
+            // Add Page Buttons
             for (let i = startPage; i <= endPage; i++) {
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
@@ -177,6 +185,7 @@
                 paginationDiv.appendChild(pageButton);
             }
 
+            // Add Next Button
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
             nextButton.disabled = currentPage === totalPages;
