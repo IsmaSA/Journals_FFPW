@@ -4,24 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
-    <style>
-        body {
+   body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
         }
 
-        h1 {
-            text-align: center;
-            margin: 20px 0;
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .header img {
+            max-width: 100px;
+            height: auto;
         }
 
         .developer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             font-size: 12px;
             color: #666;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
         }
 
         table {
@@ -49,26 +57,50 @@
         tr:hover {
             background-color: #f1f1f1;
         }
-   </style>
+
+        .filter-input {
+            width: 100%;
+            padding: 4px;
+            margin-bottom: 5px;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
         <!-- Include the image in the upper left -->
-        <img src="imagen/logo.jpg" alt="Logo">
+        <img src="image/logo.jpg" alt="Logo">
         <!-- Developer information in the upper right -->
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
     <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
-    <table id="tabla-datos">
+     <table id="tabla-datos">
         <thead>
             <tr>
-                <!-- Add column headers -->
-                <th>Journal</th>
-                <th>Year</th>
-                <th>Area</th>
-                <th>Impact Factor</th>
-                <th>Article Influence Score</th>
-                <th>Edition</th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Nombre">
+                    Nombre
+                </th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Año">
+                    Año
+                </th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Categoría">
+                    Categoría
+                </th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Impacto">
+                    Impacto
+                </th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Índice">
+                    Índice
+                </th>
+                <th>
+                    <input class="filter-input" type="text" placeholder="Filter Base">
+                    Base
+                </th>
             </tr>
         </thead>
         <tbody>
