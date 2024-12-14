@@ -96,10 +96,10 @@
         <thead>
             <tr>
                 <th><input class="filter-input" type="text" placeholder="">Journal Name</th>
-                <th><input class="filter-input" type="text" placeholder="">Publication Year</th>
+                <th><input class="filter-input" type="text" placeholder="">Year</th>
                 <th><input class="filter-input" type="text" placeholder="">Category</th>
-                <th><input class="filter-input" type="number" placeholder="">Impact Factor</th>
-                <th><input class="filter-input" type="number" placeholder="">Index Score</th>
+                <th><input class="filter-input" type="number" placeholder="Min Value">Impact Factor</th>
+                <th><input class="filter-input" type="number" placeholder="Min Value">Article Influence Score</th>
                 <th><input class="filter-input" type="text" placeholder="">Database</th>
             </tr>
         </thead>
@@ -110,15 +110,14 @@
     <div class="pagination" id="pagination"></div>
 
     <script>
-        const rowsPerPage = 50; // Maximum rows per page
-        let currentPage = 1; // Current page number
-        let filteredData = []; // Filtered rows
-        let originalData = []; // Original dataset
+        const rowsPerPage = 50;
+        let currentPage = 1;
+        let filteredData = [];
+        let originalData = [];
 
-        // Function to render rows for the current page
         function renderTableRows(data) {
             const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = ''; // Clear table rows
+            tableBody.innerHTML = '';
             const startIndex = (currentPage - 1) * rowsPerPage;
             const endIndex = Math.min(startIndex + rowsPerPage, data.length);
 
@@ -131,13 +130,11 @@
             }
         }
 
-        // Function to update pagination buttons
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
-            paginationDiv.innerHTML = ''; // Clear existing pagination
+            paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(totalRows / rowsPerPage);
 
-            // Add Previous button
             const prevButton = document.createElement('button');
             prevButton.textContent = 'Previous';
             prevButton.disabled = currentPage === 1;
@@ -150,7 +147,6 @@
             });
             paginationDiv.appendChild(prevButton);
 
-            // Add page buttons
             for (let i = 1; i <= totalPages; i++) {
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
@@ -163,7 +159,6 @@
                 paginationDiv.appendChild(pageButton);
             }
 
-            // Add Next button
             const nextButton = document.createElement('button');
             nextButton.textContent = 'Next';
             nextButton.disabled = currentPage === totalPages;
@@ -177,27 +172,25 @@
             paginationDiv.appendChild(nextButton);
         }
 
-        // Function to apply filters
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
-                    const filterValue = input.value.toLowerCase();
-                    const cellValue = row[index]?.toString().toLowerCase();
+                    const filterValue = input.value.trim();
+                    const cellValue = row[index]?.toString().trim();
                     if (input.type === 'number') {
                         const filterNumber = parseFloat(filterValue);
                         const cellNumber = parseFloat(cellValue);
                         return isNaN(filterNumber) || cellNumber >= filterNumber;
                     }
-                    return cellValue.includes(filterValue);
+                    return cellValue.toLowerCase().includes(filterValue.toLowerCase());
                 });
             });
 
-            currentPage = 1; // Reset to first page
+            currentPage = 1;
             renderTableRows(filteredData);
             updatePagination(filteredData.length);
         }
 
-        // Fetch data and initialize table
         fetch('datos.json')
             .then(response => response.json())
             .then(data => {
@@ -206,7 +199,6 @@
                 renderTableRows(filteredData);
                 updatePagination(filteredData.length);
 
-                // Attach filter functionality
                 document.querySelectorAll('.filter-input').forEach(input => {
                     input.addEventListener('input', filterData);
                 });
