@@ -110,7 +110,7 @@
 
     <script>
         // Fetch the JSON data and populate the table
-        fetch('datos.json')
+     fetch('datos.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -118,12 +118,29 @@
                 return response.json();
             })
             .then(data => {
-                const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-                data.forEach(fila => {
-                    const nuevaFila = tabla.insertRow();
-                    Object.values(fila).forEach(valor => {
-                        const nuevaCelda = nuevaFila.insertCell();
-                        nuevaCelda.textContent = valor;
+                const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+
+                // Populate the table rows
+                data.forEach(row => {
+                    const newRow = tableBody.insertRow();
+                    Object.values(row).forEach(value => {
+                        const newCell = newRow.insertCell();
+                        newCell.textContent = value;
+                    });
+                });
+
+                // Add filter functionality
+                const filters = document.querySelectorAll('.filter-input');
+                filters.forEach((input, columnIndex) => {
+                    input.addEventListener('input', () => {
+                        const filterValue = input.value.toLowerCase();
+                        Array.from(tableBody.rows).forEach(row => {
+                            const cell = row.cells[columnIndex];
+                            if (cell) {
+                                const cellValue = cell.textContent.toLowerCase();
+                                row.style.display = cellValue.includes(filterValue) ? '' : 'none';
+                            }
+                        });
                     });
                 });
             })
