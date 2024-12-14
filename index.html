@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
+    <title>Journals Metadata - FFPW</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -103,7 +103,7 @@
         <img src="image/icon.jpg" alt="ICON">
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
-    <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
+    <h1>Journals Metadata - FFPW</h1>
     <table id="tabla-datos">
         <thead>
             <tr>
@@ -123,7 +123,7 @@
 
     <script>
         const rowsPerPage = 50;
-        const maxVisiblePages = 5; // Max visible pages at a time
+        const maxVisiblePages = 5;
         let currentPage = 1;
         let filteredData = [];
         let originalData = [];
@@ -147,7 +147,8 @@
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(totalRows / rowsPerPage);
-            const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            const halfVisiblePages = Math.floor(maxVisiblePages / 2);
+            const startPage = Math.max(1, currentPage - halfVisiblePages);
             const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
             const prevButton = document.createElement('button');
