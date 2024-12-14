@@ -123,6 +123,7 @@
 
     <script>
         const rowsPerPage = 50;
+        const maxVisiblePages = 5; // Max visible pages at a time
         let currentPage = 1;
         let filteredData = [];
         let originalData = [];
@@ -146,8 +147,6 @@
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(totalRows / rowsPerPage);
-            const maxVisiblePages = 5; // Maximum visible page buttons
-
             const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
             const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
 
