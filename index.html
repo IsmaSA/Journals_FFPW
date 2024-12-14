@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
-   body {
+    <title>Datos en la Web</title>
+    <style>
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -69,37 +70,38 @@
 <body>
     <div class="header">
         <!-- Include the image in the upper left -->
-        <img src="image/logo.jpg" alt="Logo">
+        <img src="imagen/logo.png" alt="Logo">
         <!-- Developer information in the upper right -->
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
-    <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
-     <table id="tabla-datos">
+    <h1>Datos en la Web</h1>
+    <table id="tabla-datos">
         <thead>
             <tr>
+                <!-- Customized column headers -->
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Nombre">
-                    Nombre
+                    <input class="filter-input" type="text" placeholder="Filter Journal Name">
+                    Journal Name
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Año">
-                    Año
+                    <input class="filter-input" type="text" placeholder="Filter  Year">
+                    Publication Year
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Categoría">
-                    Categoría
+                    <input class="filter-input" type="text" placeholder="Filter Category">
+                    Category
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Impacto">
-                    Impacto
+                    <input class="filter-input" type="text" placeholder="Filter Impact Factor">
+                    Impact Factor
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Índice">
-                    Índice
+                    <input class="filter-input" type="text" placeholder="Filter Article Influence Score">
+                    Index Score
                 </th>
                 <th>
-                    <input class="filter-input" type="text" placeholder="Filter Base">
-                    Base
+                    <input class="filter-input" type="text" placeholder="Filter Database">
+                    Database
                 </th>
             </tr>
         </thead>
@@ -110,7 +112,7 @@
 
     <script>
         // Fetch the JSON data and populate the table
-     fetch('datos.json')
+        fetch('datos.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
