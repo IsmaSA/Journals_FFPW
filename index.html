@@ -65,6 +65,25 @@
             margin-bottom: 5px;
             box-sizing: border-box;
         }
+
+        .pagination {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .pagination button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .pagination button.disabled {
+            background-color: #ddd;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -109,8 +128,79 @@
             <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
+    <div class="pagination" id="pagination"></div>
 
     <script>
+        // Variables for pagination
+        const rowsPerPage = 50;
+        let currentPage = 1;
+        let totalRows = 0;
+        let filteredRows = [];
+
+        // Function to render rows for the current page
+        function renderTableRows(rows) {
+            const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = Math.min(start + rowsPerPage, rows.length);
+
+            for (let i = start; i < end; i++) {
+                const newRow = tableBody.insertRow();
+                rows[i].forEach(value => {
+                    const newCell = newRow.insertCell();
+                    newCell.textContent = value;
+                });
+            }
+        }
+
+        // Function to update pagination buttons
+        function updatePagination(totalRows) {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = ''; // Clear existing buttons
+
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.classList.add(currentPage === 1 ? 'disabled' : '');
+            prevButton.disabled = currentPage === 1;
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTableRows(filteredRows);
+                    updatePagination(totalRows);
+                }
+            });
+            pagination.appendChild(prevButton);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.classList.add(currentPage === i ? 'disabled' : '');
+                pageButton.disabled = currentPage === i;
+                pageButton.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTableRows(filteredRows);
+                    updatePagination(totalRows);
+                });
+                pagination.appendChild(pageButton);
+            }
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.classList.add(currentPage === totalPages ? 'disabled' : '');
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTableRows(filteredRows);
+                    updatePagination(totalRows);
+                }
+            });
+            pagination.appendChild(nextButton);
+        }
+
         // Fetch the JSON data and populate the table
         fetch('datos.json')
             .then(response => {
@@ -120,35 +210,32 @@
                 return response.json();
             })
             .then(data => {
-                const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-
-                // Populate the table rows
-                data.forEach(row => {
-                    const newRow = tableBody.insertRow();
-                    Object.values(row).forEach(value => {
-                        const newCell = newRow.insertCell();
-                        newCell.textContent = value;
-                    });
-                });
+                filteredRows = data.map(row => Object.values(row));
+                totalRows = filteredRows.length;
+                renderTableRows(filteredRows);
+                updatePagination(totalRows);
 
                 // Add filter functionality
                 const filters = document.querySelectorAll('.filter-input');
                 filters.forEach((input, columnIndex) => {
                     input.addEventListener('input', () => {
                         const filterValue = input.value.toLowerCase();
-                        Array.from(tableBody.rows).forEach(row => {
-                            const cell = row.cells[columnIndex];
-                            if (cell) {
-                                const cellValue = cell.textContent.toLowerCase();
+                        filteredRows = data
+                            .map(row => Object.values(row))
+                            .filter(row => {
+                                const cellValue = row[columnIndex]?.toString().toLowerCase();
                                 if (input.type === 'number') {
                                     const numericFilter = parseFloat(input.value);
-                                    const cellNumber = parseFloat(cell.textContent);
-                                    row.style.display = isNaN(numericFilter) || isNaN(cellNumber) || cellNumber >= numericFilter ? '' : 'none';
+                                    const cellNumber = parseFloat(cellValue);
+                                    return isNaN(numericFilter) || isNaN(cellNumber) || cellNumber >= numericFilter;
                                 } else {
-                                    row.style.display = cellValue.includes(filterValue) ? '' : 'none';
+                                    return cellValue.includes(filterValue);
                                 }
-                            }
-                        });
+                            });
+                        totalRows = filteredRows.length;
+                        currentPage = 1; // Reset to the first page
+                        renderTableRows(filteredRows);
+                        updatePagination(totalRows);
                     });
                 });
             })
