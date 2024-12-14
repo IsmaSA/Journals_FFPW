@@ -5,43 +5,81 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Datos en la Web</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .developer {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
         table {
             border-collapse: collapse;
-            width: 50%;
+            width: 90%;
             margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
+
         th, td {
             border: 1px solid #ddd;
             text-align: left;
             padding: 8px;
         }
+
         th {
             background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
     </style>
 </head>
 <body>
-    <h1 style="text-align: center;">Journals data provided by the faculty of fisheries and protecction of waters (FFPW)</h1>
+    <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
+    <h1>Datos en la Web</h1>
     <table id="tabla-datos">
         <thead>
             <tr>
-                <th>Journal</th>
-                <th>Year</th>
-                 <th>Area</th>
-                 <th>Impact Factor</th>
-                 <th>Article Influence Score</th>
-                 <th>Edition</th>
+                <!-- Add column headers -->
+                <th>Nombre</th>
+                <th>Año</th>
+                <th>Categoría</th>
+                <th>Impacto</th>
+                <th>Índice</th>
+                <th>Base</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Los datos se agregarán aquí dinámicamente -->
+            <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
 
     <script>
-        // Cargar el archivo JSON
+        // Fetch the JSON data and populate the table
         fetch('datos.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 const tabla = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
                 data.forEach(fila => {
