@@ -3,71 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journals Metadata - FFPW</title>
+    <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
     <style>
-        /* General Body Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
-            color: #333;
         }
 
-        /* Header Styling */
         .header {
-            background-color: #003366;
-            color: #fff;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .header img {
-            max-width: 150px;
+            max-width: 200px;
             height: auto;
         }
 
         .developer {
             font-size: 12px;
-            color: #ddd;
+            color: #666;
         }
 
-        /* Title Styling */
         h1 {
             text-align: center;
             margin: 20px 0;
-            color: #003366;
-            font-size: 24px;
-            font-weight: bold;
         }
 
-        /* Table Styling */
         table {
+            border-collapse: collapse;
             width: 90%;
             margin: 20px auto;
-            border-collapse: collapse;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         th, td {
             border: 1px solid #ddd;
             text-align: left;
-            padding: 10px;
+            padding: 8px;
         }
 
         th {
-            background-color: #003366;
-            color: #fff;
+            background-color: #f4f4f4;
             font-weight: bold;
-            text-align: center;
-        }
-
-        td {
-            text-align: center;
         }
 
         tr:nth-child(even) {
@@ -75,74 +56,42 @@
         }
 
         tr:hover {
-            background-color: #e6f7ff;
+            background-color: #f1f1f1;
         }
 
         .filter-input {
-            width: 90%;
-            padding: 8px;
+            width: 100%;
+            padding: 4px;
             margin-bottom: 5px;
             box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
         }
 
-        .filter-input:focus {
-            border-color: #003366;
-            outline: none;
-        }
-
-        /* Pagination Styling */
         .pagination {
             text-align: center;
             margin: 20px;
         }
 
         .pagination button {
-            padding: 8px 16px;
+            padding: 10px;
             margin: 5px;
             border: none;
-            background-color: #003366;
+            background-color: #007bff;
             color: white;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 14px;
-            transition: background-color 0.3s;
-        }
-
-        .pagination button:hover {
-            background-color: #0056b3;
         }
 
         .pagination button.disabled {
             background-color: #ddd;
-            color: #666;
             cursor: not-allowed;
-        }
-
-        .pagination button.active {
-            background-color: #0056b3;
-        }
-
-        /* Footer Styling */
-        footer {
-            background-color: #003366;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            font-size: 12px;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="image/icon.jpg" alt="Faculty Logo">
+        <img src="image/icon.jpg" alt="ICON">
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
-    <h1>Journals Metadata - Faculty of Fisheries and Protection of Waters (FFPW)</h1>
+    <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
     <table id="tabla-datos">
         <thead>
             <tr>
@@ -160,17 +109,13 @@
     </table>
     <div class="pagination" id="pagination"></div>
 
-    <footer>
-        Faculty of Fisheries and Protection of Waters (FFPW) | University of South Bohemia
-    </footer>
-
     <script>
-        const rowsPerPage = 50;
-        let currentPage = 1;
-        let filteredData = [];
-        let originalData = [];
+        const rowsPerPage = 50; // Maximum rows per page
+        let currentPage = 1; // Current page number
+        let filteredData = []; // Filtered rows
+        let originalData = []; // Original dataset
 
-        // Function to render rows
+        // Function to render rows for the current page
         function renderTableRows(data) {
             const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
             tableBody.innerHTML = '';
@@ -186,7 +131,7 @@
             }
         }
 
-        // Function to update pagination
+        // Function to update pagination buttons
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
@@ -208,7 +153,6 @@
                 const pageButton = document.createElement('button');
                 pageButton.textContent = i;
                 pageButton.disabled = currentPage === i;
-                pageButton.classList.add(currentPage === i ? 'active' : '');
                 pageButton.addEventListener('click', () => {
                     currentPage = i;
                     renderTableRows(filteredData);
@@ -230,7 +174,7 @@
             paginationDiv.appendChild(nextButton);
         }
 
-        // Filter Function
+        // Function to apply filters
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
@@ -245,12 +189,12 @@
                 });
             });
 
-            currentPage = 1;
+            currentPage = 1; // Reset to first page
             renderTableRows(filteredData);
             updatePagination(filteredData.length);
         }
 
-        // Fetch data
+        // Fetch data and initialize table
         fetch('datos.json')
             .then(response => response.json())
             .then(data => {
