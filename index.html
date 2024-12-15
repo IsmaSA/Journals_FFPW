@@ -3,86 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</title>
+    <title>Journals Metadata - FFPW</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f0f8ff; /* Light blue background */
         }
-
+    
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
+            background-color: #007bff; /* Blue header */
+            color: white;
         }
-
+    
         .header img {
-            max-width: 200px;
+            max-width: 150px;
             height: auto;
         }
-
+    
         .developer {
             font-size: 12px;
-            color: #666;
+            color: white;
         }
-
+        .footer {
+            background-color: #007bff; /* Blue background */
+            color: white;
+            text-align: center;
+            padding: 15px 20px;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            margin-top: 20px;
+            box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .footer-content p {
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .footer-link {
+            color: #cce5ff; /* Lighter blue for the link */
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .footer-link:hover {
+            text-decoration: underline;
+            color: #b3d9ff; /* Even lighter blue on hover */
+        }
+        
         h1 {
             text-align: center;
             margin: 20px 0;
+            color: #0056b3; /* Darker blue */
         }
-
+    
         table {
             border-collapse: collapse;
             width: 90%;
             margin: 20px auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background-color: white;
         }
-
+    
         th, td {
             border: 1px solid #ddd;
             text-align: left;
-            padding: 8px;
+            padding: 10px;
         }
-
+    
         th {
-            background-color: #f4f4f4;
+            background-color: #cce5ff; /* Light blue for headers */
+            color: #004085; /* Dark blue text */
             font-weight: bold;
         }
-
+    
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #e9f7ff; /* Subtle blue for alternating rows */
         }
-
+    
         tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .filter-input {
-            width: 100%;
-            padding: 4px;
-            margin-bottom: 5px;
-            box-sizing: border-box;
-        }
-
-        .pagination {
-            text-align: center;
-            margin: 20px;
-        }
-
-        .pagination button {
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            background-color: #007bff;
-            color: white;
+            background-color: #b3d9ff; /* Highlighted blue */
             cursor: pointer;
         }
-
-        .pagination button.disabled {
-            background-color: #ddd;
+    
+        tr.selected {
+            background-color: #007bff; /* Blue for selected row */
+            color: white;
+        }
+    
+        .filter-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 5px;
+            border: 1px solid #007bff;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    
+        .filter-input:focus {
+            outline: 2px solid #0056b3; /* Focus on inputs */
+        }
+   
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .pagination button, .pagination span {
+            padding: 8px 12px;
+            margin: 0 2px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .pagination button:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+        }
+        
+        .pagination button:disabled {
+            background-color: #f8f9fa;
+            color: #aaa;
+            border-color: #ddd;
             cursor: not-allowed;
+        }
+        
+        .pagination .active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+            cursor: default;
+        }
+        
+        .pagination span {
+            background-color: transparent;
+            border: none;
+            color: #6c757d;
+            cursor: default;
+            padding: 8px 6px;
         }
     </style>
 </head>
@@ -91,23 +166,26 @@
         <img src="image/icon.jpg" alt="ICON">
         <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
     </div>
-    <h1>Journals metadata provided by the Faculty of Fisheries and Protection of Waters (FFPW)</h1>
+    <h1>Journals Metadata - FFPW</h1>
     <table id="tabla-datos">
         <thead>
             <tr>
-                <th><input class="filter-input" type="text" placeholder="Filter by Name">Journal Name</th>
-                <th><input class="filter-input" type="text" placeholder="Filter by Year">Publication Year</th>
-                <th><input class="filter-input" type="text" placeholder="Filter by Category">Category</th>
-                <th><input class="filter-input" type="number" placeholder="Min Value">Impact Factor</th>
-                <th><input class="filter-input" type="number" placeholder="Min Value">Index Score</th>
-                <th><input class="filter-input" type="text" placeholder="Filter by Database">Database</th>
+                <th><input class="filter-input" type="text" placeholder="">Journal</th>
+                <th><input class="filter-input" type="text" placeholder="">Year</th>
+                <th><input class="filter-input" type="text" placeholder="">Category</th>
+                <th class="sortable" data-column="3" data-order="desc">Impact Factor</th>
+                <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
+                <th><input class="filter-input" type="text" placeholder="">Database</th>
             </tr>
         </thead>
+        
         <tbody>
             <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
-    <div class="pagination" id="pagination"></div>
+    <div class="pagination" id="pagination">
+        <!-- Pagination Buttons Dynamically Added Here -->
+    </div>
 
     <script>
         const rowsPerPage = 50; // Maximum rows per page
@@ -115,80 +193,188 @@
         let filteredData = []; // Filtered rows
         let originalData = []; // Original dataset
 
-        // Function to render rows for the current page
-        function renderTableRows(data) {
-            const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-            tableBody.innerHTML = '';
-            const startIndex = (currentPage - 1) * rowsPerPage;
-            const endIndex = Math.min(startIndex + rowsPerPage, data.length);
+   // Function to render rows for the current page
+   function renderTableRows(data) {
+    const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+    const startIndex = (currentPage - 1) * rowsPerPage;
+    const endIndex = Math.min(startIndex + rowsPerPage, data.length);
 
-            for (let i = startIndex; i < endIndex; i++) {
-                const row = tableBody.insertRow();
-                data[i].forEach(cell => {
-                    const newCell = row.insertCell();
-                    newCell.textContent = cell;
-                });
-            }
-        }
+    for (let i = startIndex; i < endIndex; i++) {
+        const row = tableBody.insertRow();
+        row.classList.add('data-row');
+        data[i].forEach(cell => {
+            const newCell = row.insertCell();
+            newCell.textContent = cell;
+        });
+
+        // Add click event to toggle "selected" class
+        row.addEventListener('click', () => {
+            // Remove "selected" class from all rows
+            document.querySelectorAll('.data-row').forEach(r => r.classList.remove('selected'));
+            // Add "selected" class to the clicked row
+            row.classList.add('selected');
+        });
+    }
+}
+
 
         // Function to update pagination buttons
         function updatePagination(totalRows) {
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
             const totalPages = Math.ceil(totalRows / rowsPerPage);
-
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Previous';
-            prevButton.disabled = currentPage === 1;
-            prevButton.addEventListener('click', () => {
+            const maxVisiblePages = 5;
+        
+            const createPageButton = (text, isActive, callback) => {
+                const button = document.createElement('button');
+                button.textContent = text;
+                if (isActive) button.classList.add('active');
+                button.addEventListener('click', callback);
+                return button;
+            };
+        
+            // Previous button
+            const prevButton = createPageButton('Previous', false, () => {
                 if (currentPage > 1) {
                     currentPage--;
                     renderTableRows(filteredData);
                     updatePagination(filteredData.length);
                 }
             });
+            prevButton.disabled = currentPage === 1;
             paginationDiv.appendChild(prevButton);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.disabled = currentPage === i;
-                pageButton.addEventListener('click', () => {
+        
+            // Page buttons with ellipsis
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+        
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+        
+            if (startPage > 1) {
+                paginationDiv.appendChild(createPageButton(1, currentPage === 1, () => {
+                    currentPage = 1;
+                    renderTableRows(filteredData);
+                    updatePagination(filteredData.length);
+                }));
+                paginationDiv.appendChild(document.createElement('span')).textContent = '...';
+            }
+        
+            for (let i = startPage; i <= endPage; i++) {
+                paginationDiv.appendChild(createPageButton(i, currentPage === i, () => {
                     currentPage = i;
                     renderTableRows(filteredData);
                     updatePagination(filteredData.length);
-                });
-                paginationDiv.appendChild(pageButton);
+                }));
             }
-
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Next';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.addEventListener('click', () => {
+        
+            if (endPage < totalPages) {
+                paginationDiv.appendChild(document.createElement('span')).textContent = '...';
+                paginationDiv.appendChild(createPageButton(totalPages, currentPage === totalPages, () => {
+                    currentPage = totalPages;
+                    renderTableRows(filteredData);
+                    updatePagination(filteredData.length);
+                }));
+            }
+        
+            // Next button
+            const nextButton = createPageButton('Next', false, () => {
                 if (currentPage < totalPages) {
                     currentPage++;
                     renderTableRows(filteredData);
                     updatePagination(filteredData.length);
                 }
             });
+            nextButton.disabled = currentPage === totalPages;
             paginationDiv.appendChild(nextButton);
         }
+        //  rEMOVE BECAUSE IT IS NOT WORKING FOR NOW
+        function sortTable(columnIndex, headerElement) {
+            const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
+        
+            // Sort data based on column index and order
+            filteredData.sort((a, b) => {
+                let valueA = a[columnIndex] || '';
+                let valueB = b[columnIndex] || '';
+        
+                if (!isNaN(valueA) && !isNaN(valueB)) {
+                    valueA = parseFloat(valueA);
+                    valueB = parseFloat(valueB);
+                } else {
+                    valueA = valueA.toString().toLowerCase();
+                    valueB = valueB.toString().toLowerCase();
+                }
+        
+                return order === "asc" ? valueA - valueB || valueA.localeCompare(valueB)
+                                       : valueB - valueA || valueB.localeCompare(valueA);
+            });
+        
+            // Reset all headers and update the active one
+            document.querySelectorAll("th.sortable").forEach(th => th.dataset.order = "none");
+            headerElement.dataset.order = order;
+        
+            // Re-render the table
+            renderTableRows(filteredData);
+            updatePagination(filteredData.length);
+        }
+        
+        // Add event listeners to sortable headers
+        document.querySelectorAll("th.sortable").forEach((th) => {
+            th.addEventListener("click", () => {
+                const columnIndex = parseInt(th.dataset.column);
+                sortTable(columnIndex, th);
+            });
+        });
+        
+        
+        // Add event listeners to sortable headers
+        document.querySelectorAll("th.sortable").forEach((th) => {
+            th.addEventListener("click", () => {
+                const columnIndex = parseInt(th.dataset.column);
+                const currentOrder = th.dataset.order === "asc" ? "desc" : "asc";
+        
+                // Call sort function with header reference
+                sortTable(columnIndex, currentOrder, th);
+            });
+        });
+        
+        
+        // Add click events to sortable headers
+        document.querySelectorAll("th.sortable").forEach((th) => {
+            th.addEventListener("click", () => {
+                const columnIndex = parseInt(th.dataset.column);
+                const currentOrder = th.dataset.order === "asc" ? "desc" : "asc";
+        
+                // Call sort function and pass header for arrow toggle
+                sortTable(columnIndex, currentOrder, th);
+            });
+        });
+        
 
-        // Function to apply filters
+
+
+// Function to apply filters
         function filterData() {
             filteredData = originalData.filter(row => {
                 return Array.from(document.querySelectorAll('.filter-input')).every((input, index) => {
                     const filterValue = input.value.trim();
                     const cellValue = row[index]?.toString().trim();
+    
                     if (input.type === 'number') {
                         const filterNumber = parseFloat(filterValue);
                         const cellNumber = parseFloat(cellValue);
-                        return isNaN(filterNumber) || cellNumber >= filterNumber;
+    
+                        // Allow independent filtering for numeric values
+                        return isNaN(filterNumber) || (!isNaN(cellNumber) && cellNumber >= filterNumber);
                     }
+    
+                    // For text filters
                     return cellValue.toLowerCase().includes(filterValue.toLowerCase());
                 });
             });
-
+    
             currentPage = 1; // Reset to first page
             renderTableRows(filteredData);
             updatePagination(filteredData.length);
@@ -196,18 +382,29 @@
 
         // Fetch data and initialize table
         fetch('datos.json')
-            .then(response => response.json())
-            .then(data => {
-                originalData = data.map(row => Object.values(row));
-                filteredData = [...originalData];
-                renderTableRows(filteredData);
-                updatePagination(filteredData.length);
+        .then(response => response.json())
+        .then(data => {
+            originalData = data.map(row => Object.values(row));
+            filteredData = [...originalData];
+            renderTableRows(filteredData);
+            updatePagination(filteredData.length);
 
-                document.querySelectorAll('.filter-input').forEach(input => {
-                    input.addEventListener('input', filterData);
-                });
-            })
-            .catch(error => console.error('Error loading data:', error));
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.addEventListener('input', filterData);
+            });
+        })
+        .catch(error => console.error('Error loading data:', error));
     </script>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>
+                © Faculty of Fisheries and Protection of Waters (FFPW) | 
+                <a href="https://www.frov.jcu.cz/en/faculty/about" target="_blank" class="footer-link">
+                    About Us
+                </a>
+            </p>
+        </div>
+    </footer>
+    
 </body>
 </html>
