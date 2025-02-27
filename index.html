@@ -241,6 +241,21 @@ th.sortable:hover {
     display: inline-block;
 }
 
+.autocomplete-suggestions {
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    z-index: 1000;
+    width: calc(100% - 2px); /* Match input width */
+}
+.autocomplete-suggestion {
+    padding: 5px;
+    cursor: pointer;
+}
+.autocomplete-suggestion:hover {
+    background-color: #f0f0f0;
+}
 
 strong {
     color: #0056b3; /* Highlighted blue for strong text */
@@ -268,8 +283,10 @@ strong {
     <table id="tabla-datos">
         <thead>
             <tr>
-                <th><input class="filter-input" type="text" placeholder="USE EXACT NAME">Journal</th>
-                <th>Year</th>
+                <th>
+                    <input id="journal-filter" class="filter-input" type="text" placeholder="Type journal name">
+                    <div id="journal-suggestions" class="autocomplete-suggestions"></div>
+                </th>                <th>Year</th>
                 <th><input class="filter-input" type="text" placeholder="USE EXACT NAME">Category</th>
                 <th class="sortable" data-column="3" data-order="none">Impact Factor</th>
                 <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
@@ -452,18 +469,13 @@ document.querySelectorAll("th.sortable").forEach((th) => {
 
 // Function to apply filters
 function filterData() {
-    // Filter data from the original dataset
+    const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
+    const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
+
     filteredData = originalData.filter(row => {
-        const filterIndexes = [0, 2]; // Indexes of columns with filters: Journal (0) and Category (2)
-
-        return filterIndexes.every((filterIndex, inputIndex) => {
-            const input = document.querySelectorAll('.filter-input')[inputIndex];
-            const filterValue = input.value.trim().toLowerCase(); // User input in lowercase
-            const cellValue = row[filterIndex] ? row[filterIndex].toString().trim().toLowerCase() : ""; // Cell value in lowercase
-
-            // Apply exact string match: filter only if the cell matches exactly
-            return filterValue === "" || cellValue === filterValue;
-        });
+        const journalMatch = row[0].toLowerCase().includes(journalInput);
+        const categoryMatch = row[2].toLowerCase().includes(categoryInput);
+        return journalMatch && categoryMatch;
     });
 
     // Reset pagination and re-render the table
@@ -478,7 +490,45 @@ document.querySelectorAll('.filter-input').forEach(input => {
     input.addEventListener('input', filterData);
 });
 
+// Function to show autocomplete suggestions
+function showSuggestions(input, suggestions) {
+    const suggestionsContainer = document.getElementById('journal-suggestions');
+    suggestionsContainer.innerHTML = suggestions.map(journal => `
+        <div class="autocomplete-suggestion">${journal}</div>
+    `).join('');
 
+    // Add click event to suggestions
+    document.querySelectorAll('.autocomplete-suggestion').forEach(suggestion => {
+        suggestion.addEventListener('click', () => {
+            document.getElementById('journal-filter').value = suggestion.textContent;
+            suggestionsContainer.innerHTML = ''; // Clear suggestions
+            filterData(); // Apply filter
+        });
+    });
+}
+
+// Function to update autocomplete suggestions
+function updateSuggestions() {
+    const input = document.getElementById('journal-filter').value.trim().toLowerCase();
+    if (input === '') {
+        document.getElementById('journal-suggestions').innerHTML = '';
+        return;
+    }
+
+    const suggestions = originalData
+        .map(row => row[0]) // Extract journal names
+        .filter((journal, index, self) => self.indexOf(journal) === index) // Remove duplicates
+        .filter(journal => journal.toLowerCase().includes(input)) // Filter by input
+        .slice(0, 5); // 
+
+    showSuggestions(input, suggestions);
+}
+
+// Attach event listener for the journal filter input
+document.getElementById('journal-filter').addEventListener('input', () => {
+    updateSuggestions();
+    filterData();
+});
 
         // Fetch data and initialize table
         fetch('datos.json')
