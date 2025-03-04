@@ -474,7 +474,7 @@ function filterData() {
 
     filteredData = originalData.filter(row => {
         const journalMatch = row[0].toLowerCase().includes(journalInput);
-        const categoryMatch = row[2].toLowerCase().includes(categoryInput);
+        const categoryMatch = row[2].toLowerCase() === (categoryInput);
         return journalMatch && categoryMatch;
     });
 
