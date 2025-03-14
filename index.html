@@ -286,7 +286,9 @@ strong {
                 <th>
                     <input id="journal-filter" class="filter-input" type="text" placeholder="Type journal name">
                     <div id="journal-suggestions" class="autocomplete-suggestions"></div>
-                </th>                <th>Year</th>
+                    Journal
+                </th>                  
+                 <th>Year</th>
                 <th><input class="filter-input" type="text" placeholder="USE EXACT NAME">Category</th>
                 <th class="sortable" data-column="3" data-order="none">Impact Factor</th>
                 <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
@@ -295,17 +297,19 @@ strong {
                 <th>Database</th>
             </tr>
         </thead>
-        
+
         <tbody>
             <!-- Rows will be dynamically added here -->
         </tbody>
     </table>
+
+
     <div class="pagination" id="pagination">
         <!-- Pagination Buttons Dynamically Added Here -->
     </div>
 
     <script>
-        const rowsPerPage = 50; // Maximum rows per page
+        const rowsPerPage = 25; // Maximum rows per page
         let currentPage = 1; // Current page number
         let filteredData = []; // Filtered rows
         let originalData = []; // Original dataset
