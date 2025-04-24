@@ -470,8 +470,9 @@ strong {
     
           filteredData = originalData.filter(row => {
             const journalMatch = row[0].toLowerCase().includes(journalInput);
-            const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
-            return journalMatch && categoryMatch;
+            const normalize = str => str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            const categoryMatch = categoryInput === "" || normalize(row[2]) === normalize(categoryInput);
+                        return journalMatch && categoryMatch;
           });
     
           currentPage = 1;
@@ -588,51 +589,82 @@ strong {
                 });
             });
         });
+
         function sortTable(columnIndex, headerElement) {
           const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
-        
+      
+          // Copy data to sort: use originalData if no filters are applied
           const dataToSort = filteredData.length === originalData.length ? [...originalData] : [...filteredData];
-        
+      
+          // Sort data based on column index
           dataToSort.sort((a, b) => {
-            let valueA = a[columnIndex] || 0;
-            let valueB = b[columnIndex] || 0;
-        
-            if (!isNaN(valueA) && !isNaN(valueB)) {
-              valueA = parseFloat(valueA);
-              valueB = parseFloat(valueB);
-            } else {
-              valueA = valueA.toString().toLowerCase();
-              valueB = valueB.toString().toLowerCase();
-            }
-        
-            if (order === "asc") {
-              return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
-            } else {
-              return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
-            }
+              let valueA = a[columnIndex] || 0; // Default to 0 for empty or missing values
+              let valueB = b[columnIndex] || 0;
+      
+              // Ensure numeric comparison
+              if (!isNaN(valueA) && !isNaN(valueB)) {
+                  valueA = parseFloat(valueA);
+                  valueB = parseFloat(valueB);
+              } else {
+                  // Fallback to text comparison for non-numeric values
+                  valueA = valueA.toString().toLowerCase();
+                  valueB = valueB.toString().toLowerCase();
+              }
+      
+              // Ascending and descending sorting
+              if (order === "asc") {
+                  return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+              } else {
+                  return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+              }
           });
         
-          filteredData = [...dataToSort];
-          currentPage = 1;
-        
-          // Reset all headers
-          document.querySelectorAll("th.sortable").forEach(th => {
-            th.dataset.order = "none";
-            th.classList.remove("ascending", "descending");
-          });
-        
-          headerElement.dataset.order = order;
-          headerElement.classList.add(order === "asc" ? "ascending" : "descending");
-        
-          renderTableRows(filteredData);
-          updatePagination(filteredData.length);
-        }
-        document.querySelectorAll("th.sortable").forEach((th) => {
-          th.addEventListener("click", () => {
-            const columnIndex = parseInt(th.dataset.column);
-            sortTable(columnIndex, th);
-          });
-        });
+filteredData = [...dataToSort];
+    currentPage = 1;
+
+    // Reset all header indicators and update current header
+    document.querySelectorAll("th.sortable").forEach(th => {
+        th.dataset.order = "none";
+        th.classList.remove("ascending", "descending");
+    });
+    headerElement.dataset.order = order;
+    headerElement.classList.add(order === "asc" ? "ascending" : "descending");
+
+    // Re-render table
+    renderTableRows(filteredData);
+    updatePagination(filteredData.length);
+}
+
+// Attach sorting functionality to sortable headers
+document.querySelectorAll("th.sortable").forEach((th) => {
+    th.addEventListener("click", () => {
+        const columnIndex = parseInt(th.dataset.column);
+        sortTable(columnIndex, th);
+    });
+});
+
+// Function to apply filters
+function filterData() {
+  const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
+  const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
+
+  filteredData = originalData.filter(row => {
+      const journalMatch = row[0].toLowerCase().includes(journalInput);
+      const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
+      return journalMatch && categoryMatch;
+  });
+
+  // Reset pagination and re-render the table
+  currentPage = 1;
+  renderTableRows(filteredData);
+  updatePagination(filteredData.length);
+}
+
+
+// Attach filter logic to all input fields
+document.querySelectorAll('.filter-input').forEach(input => {
+  input.addEventListener('input', filterData);
+});
         
         fetch('datos.json')
           .then(response => response.json())
