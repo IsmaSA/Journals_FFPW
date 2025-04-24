@@ -588,6 +588,51 @@ strong {
                 });
             });
         });
+        function sortTable(columnIndex, headerElement) {
+          const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
+        
+          const dataToSort = filteredData.length === originalData.length ? [...originalData] : [...filteredData];
+        
+          dataToSort.sort((a, b) => {
+            let valueA = a[columnIndex] || 0;
+            let valueB = b[columnIndex] || 0;
+        
+            if (!isNaN(valueA) && !isNaN(valueB)) {
+              valueA = parseFloat(valueA);
+              valueB = parseFloat(valueB);
+            } else {
+              valueA = valueA.toString().toLowerCase();
+              valueB = valueB.toString().toLowerCase();
+            }
+        
+            if (order === "asc") {
+              return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+              return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+          });
+        
+          filteredData = [...dataToSort];
+          currentPage = 1;
+        
+          // Reset all headers
+          document.querySelectorAll("th.sortable").forEach(th => {
+            th.dataset.order = "none";
+            th.classList.remove("ascending", "descending");
+          });
+        
+          headerElement.dataset.order = order;
+          headerElement.classList.add(order === "asc" ? "ascending" : "descending");
+        
+          renderTableRows(filteredData);
+          updatePagination(filteredData.length);
+        }
+        document.querySelectorAll("th.sortable").forEach((th) => {
+          th.addEventListener("click", () => {
+            const columnIndex = parseInt(th.dataset.column);
+            sortTable(columnIndex, th);
+          });
+        });
         
         fetch('datos.json')
           .then(response => response.json())
