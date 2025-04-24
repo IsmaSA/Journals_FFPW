@@ -534,6 +534,14 @@ document.getElementById('journal-filter').addEventListener('input', () => {
     filterData();
 });
 
+// Hide suggestions on Enter key
+document.getElementById('journal-filter').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        document.getElementById('journal-suggestions').innerHTML = '';
+    }
+});
+
+
         // Fetch data and initialize table
         fetch('datos.json')
         .then(response => response.json())
