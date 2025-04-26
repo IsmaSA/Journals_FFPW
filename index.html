@@ -342,7 +342,7 @@ strong {
               Journal
             </th>
             <th>Year</th>
-            <th><input class="filter-input" type="text" placeholder="USE EXACT NAME">Category</th>
+            <th><input class="filter-input" type="text" placeholder="Use exact name">Category</th>
             <th class="sortable" data-column="3" data-order="none">Impact Factor</th>
             <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
             <th>Ranking</th>
@@ -367,25 +367,24 @@ strong {
         let filteredData = [];
         let originalData = [];
         let selectedJournals = [];
-
-    
+        
         function renderTableRows(data) {
           const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
           tableBody.innerHTML = '';
           const startIndex = (currentPage - 1) * rowsPerPage;
           const endIndex = Math.min(startIndex + rowsPerPage, data.length);
-    
+        
           for (let i = startIndex; i < endIndex; i++) {
             const row = tableBody.insertRow();
             row.classList.add('data-row');
-    
+        
             const compareCell = row.insertCell();
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'compare-checkbox';
             checkbox.dataset.journal = data[i][0];
             
-            // 👉 Check if this journal is already selected
+            // Check if this journal is already selected
             if (selectedJournals.includes(data[i][0])) {
                 checkbox.checked = true;
             }
@@ -403,25 +402,31 @@ strong {
             
             compareCell.appendChild(checkbox);
             
-    
+            // Add the rest of the cells
             data[i].forEach(cell => {
               const newCell = row.insertCell();
               newCell.textContent = cell;
             });
-    
-            row.addEventListener('click', () => {
-              document.querySelectorAll('.data-row').forEach(r => r.classList.remove('selected'));
-              row.classList.add('selected');
+        
+            row.addEventListener('click', (event) => {
+              // Prevent toggling the checkbox when clicking the row
+              if (event.target.type !== 'checkbox') {
+                document.querySelectorAll('.data-row').forEach(r => r.classList.remove('selected'));
+                row.classList.add('selected');
+              }
             });
           }
         }
-    
+        
         function updatePagination(totalRows) {
           const paginationDiv = document.getElementById('pagination');
           paginationDiv.innerHTML = '';
           const totalPages = Math.ceil(totalRows / rowsPerPage);
           const maxVisiblePages = 5;
-    
+        
+          // Don't show pagination if there's only one page
+          if (totalPages <= 1) return;
+        
           const createPageButton = (text, isActive, callback) => {
             const button = document.createElement('button');
             button.textContent = text;
@@ -429,7 +434,7 @@ strong {
             button.addEventListener('click', callback);
             return button;
           };
-    
+        
           const prevButton = createPageButton('Previous', false, () => {
             if (currentPage > 1) {
               currentPage--;
@@ -439,13 +444,13 @@ strong {
           });
           prevButton.disabled = currentPage === 1;
           paginationDiv.appendChild(prevButton);
-    
+        
           let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
           let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
           if (endPage - startPage + 1 < maxVisiblePages) {
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
           }
-    
+        
           if (startPage > 1) {
             paginationDiv.appendChild(createPageButton(1, currentPage === 1, () => {
               currentPage = 1;
@@ -454,7 +459,7 @@ strong {
             }));
             paginationDiv.appendChild(document.createElement('span')).textContent = '...';
           }
-    
+        
           for (let i = startPage; i <= endPage; i++) {
             paginationDiv.appendChild(createPageButton(i, currentPage === i, () => {
               currentPage = i;
@@ -462,7 +467,7 @@ strong {
               updatePagination(filteredData.length);
             }));
           }
-    
+        
           if (endPage < totalPages) {
             paginationDiv.appendChild(document.createElement('span')).textContent = '...';
             paginationDiv.appendChild(createPageButton(totalPages, currentPage === totalPages, () => {
@@ -471,7 +476,7 @@ strong {
               updatePagination(filteredData.length);
             }));
           }
-    
+        
           const nextButton = createPageButton('Next', false, () => {
             if (currentPage < totalPages) {
               currentPage++;
@@ -482,29 +487,44 @@ strong {
           nextButton.disabled = currentPage === totalPages;
           paginationDiv.appendChild(nextButton);
         }
-    
-        function filterData() {
-          const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
-          const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
-    
-          filteredData = originalData.filter(row => {
+
+      function normalizeText(str) {
+          if (!str) return "";
+          return str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      }
+      
+      function filterData() {
+        const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
+        const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
+      
+        filteredData = originalData.filter(row => {
             const journalMatch = row[0].toLowerCase().includes(journalInput);
-            const normalize = str => str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const categoryMatch = categoryInput === "" || normalize(row[2]) === normalize(categoryInput);
-                        return journalMatch && categoryMatch;
-          });
-    
-          currentPage = 1;
-          renderTableRows(filteredData);
-          updatePagination(filteredData.length);
-        }
-    
+            const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
+            return journalMatch && categoryMatch;
+        });
+      
+        // Reset pagination and re-render the table
+        currentPage = 1;
+        renderTableRows(filteredData);
+        updatePagination(filteredData.length);
+      }
+      
+      
+      // Attach filter logic to all input fields
+      document.querySelectorAll('.filter-input').forEach(input => {
+        input.addEventListener('input', filterData);
+      });
+
+        
         function showSuggestions(input, suggestions) {
           const suggestionsContainer = document.getElementById('journal-suggestions');
+          
+          if (!suggestionsContainer) return;
+          
           suggestionsContainer.innerHTML = suggestions.map(journal => `
             <div class="autocomplete-suggestion">${journal}</div>
           `).join('');
-    
+        
           document.querySelectorAll('.autocomplete-suggestion').forEach(suggestion => {
             suggestion.addEventListener('click', () => {
               document.getElementById('journal-filter').value = suggestion.textContent;
@@ -513,189 +533,211 @@ strong {
             });
           });
         }
-    
+        
         function updateSuggestions() {
           const input = document.getElementById('journal-filter').value.trim().toLowerCase();
+          const suggestionsContainer = document.getElementById('journal-suggestions');
+          
+          if (!suggestionsContainer) return;
+          
           if (input === '') {
-            document.getElementById('journal-suggestions').innerHTML = '';
+            suggestionsContainer.innerHTML = '';
             return;
           }
-    
+        
           const suggestions = originalData
             .map(row => row[0])
-            .filter((journal, index, self) => self.indexOf(journal) === index)
+            .filter((journal, index, self) => self.indexOf(journal) === index) // Get unique values
             .filter(journal => journal.toLowerCase().includes(input))
             .slice(0, 5);
-    
+        
           showSuggestions(input, suggestions);
         }
-    
-        document.getElementById('journal-filter').addEventListener('input', () => {
-          updateSuggestions();
-          filterData();
-        });
-    
-        document.getElementById('journal-filter').addEventListener('keydown', function(event) {
-          if (event.key === 'Enter') {
-            document.getElementById('journal-suggestions').innerHTML = '';
+        
+        function sortTable(columnIndex, headerElement) {
+          // Default to ascending if no order set
+          const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
+          
+          // Copy data to sort
+          const dataToSort = [...filteredData];
+          
+          // Sort data based on column index
+          dataToSort.sort((a, b) => {
+            let valueA = a[columnIndex];
+            let valueB = b[columnIndex];
+            
+            // Handle potentially missing values
+            if (valueA === undefined) valueA = "";
+            if (valueB === undefined) valueB = "";
+            
+            // Ensure numeric comparison when appropriate
+            if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
+              valueA = parseFloat(valueA);
+              valueB = parseFloat(valueB);
+            } else {
+              // Fallback to text comparison for non-numeric values
+              valueA = String(valueA).toLowerCase();
+              valueB = String(valueB).toLowerCase();
+            }
+            
+            // Ascending and descending sorting
+            if (order === "asc") {
+              return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
+            } else {
+              return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
+            }
+          });
+          
+          // Update filtered data and reset to page 1
+          filteredData = dataToSort;
+          currentPage = 1;
+          
+          // Reset all header indicators and update current header
+          document.querySelectorAll("th.sortable").forEach(th => {
+            th.dataset.order = "none";
+            th.classList.remove("ascending", "descending");
+          });
+          
+          headerElement.dataset.order = order;
+          headerElement.classList.add(order === "asc" ? "ascending" : "descending");
+          
+          // Re-render table and update pagination
+          renderTableRows(filteredData);
+          updatePagination(filteredData.length);
+        }
+        
+        // Setup event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+          // Journal filter input events
+          const journalFilter = document.getElementById('journal-filter');
+          if (journalFilter) {
+            journalFilter.addEventListener('input', () => {
+              updateSuggestions();
+              filterData();
+            });
+            
+            journalFilter.addEventListener('keydown', function(event) {
+              if (event.key === 'Enter') {
+                const suggestionsContainer = document.getElementById('journal-suggestions');
+                if (suggestionsContainer) {
+                  suggestionsContainer.innerHTML = '';
+                }
+              }
+            });
           }
+        
+          // Set up category filter
+          const categoryFilter = document.querySelector('.filter-input:nth-child(2)');
+          if (categoryFilter) {
+            categoryFilter.addEventListener('input', filterData);
+          }
+          
+          // Compare button
+          const compareBtn = document.getElementById('compare-btn');
+          if (compareBtn) {
+            compareBtn.addEventListener('click', createComparisonTable);
+          }
+          
+          // Attach sorting functionality to sortable headers
+          document.querySelectorAll("th.sortable").forEach((th) => {
+            if (th && th.dataset.column !== undefined) {
+              th.addEventListener("click", () => {
+                const columnIndex = parseInt(th.dataset.column);
+                sortTable(columnIndex, th);
+              });
+            }
+          });
+          
+          // Load data
+          fetch('datos.json')
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+              return response.json();
+            })
+            .then(data => {
+              originalData = data.map(row => Object.values(row));
+              filteredData = [...originalData];
+              renderTableRows(filteredData);
+              updatePagination(filteredData.length);
+            })
+            .catch(error => {
+              console.error('Error loading data:', error);
+              document.getElementById('tabla-datos').innerHTML = 
+                '<tr><td colspan="7">Error loading data. Please try refreshing the page.</td></tr>';
+            });
         });
-    
-        document.getElementById('compare-btn').addEventListener('click', () => {
+        
+        function createComparisonTable() {
           if (selectedJournals.length < 2) {
             alert('Please select at least two journals to compare.');
             return;
-        }
-        
-        
-            const comparisonRows = filteredData.filter(row => selectedJournals.includes(row[0]));
-        
-            let html = `<h3>Journal Comparison</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Journal</th>
-                                    <th>Category</th>
-                                    <th>Impact Factor</th>
-                                    <th>AIS</th>
-                                    <th>Ranking</th>
-                                    <th>Quartile</th>
-                                    <th>Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody id="comparison-table-body">`;
-        
-            comparisonRows.forEach(row => {
-                html += `<tr data-journal="${row[0]}">
-                            <td>${row[0]}</td>  <!-- Journal -->
-                            <td>${row[2]}</td>  <!-- Category -->
-                            <td>${row[3]}</td>  <!-- Impact Factor -->
-                            <td>${row[4]}</td>  <!-- AIS -->
-                            <td>${row[5]}</td>  <!-- Ranking -->
-                            <td>${row[6]}</td>  <!-- Quartile -->
-                           <td><button class="remove-btn" title="Remove">&#128465;</button></td> <!-- 🗑️ -->
-                         </tr>`;
-            });
-        
-            html += `</tbody></table>`;
-        
-            const container = document.getElementById('comparison-container');
+          }
+          
+          const comparisonRows = filteredData.filter(row => selectedJournals.includes(row[0]));
+          
+          let html = `<h3>Journal Comparison</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Journal</th>
+                            <th>Category</th>
+                            <th>Impact Factor</th>
+                            <th>AIS</th>
+                            <th>Ranking</th>
+                            <th>Quartile</th>
+                            <th>Remove</th>
+                          </tr>
+                        </thead>
+                        <tbody id="comparison-table-body">`;
+          
+          comparisonRows.forEach(row => {
+            html += `<tr data-journal="${row[0]}">
+                      <td>${row[0]}</td>  <!-- Journal -->
+                      <td>${row[2]}</td>  <!-- Category -->
+                      <td>${row[3]}</td>  <!-- Impact Factor -->
+                      <td>${row[4]}</td>  <!-- AIS -->
+                      <td>${row[5]}</td>  <!-- Ranking -->
+                      <td>${row[6]}</td>  <!-- Quartile -->
+                      <td><button class="remove-btn" title="Remove">&#128465;</button></td>
+                    </tr>`;
+          });
+          
+          html += `</tbody></table>`;
+          
+          const container = document.getElementById('comparison-container');
+          if (container) {
             container.innerHTML = html;
             container.style.display = 'block';
-        
+            
             // Add remove logic to each remove button
             document.querySelectorAll('.remove-btn').forEach(button => {
-              button.addEventListener('click', function () {
-                  const row = this.closest('tr');
-                  const journal = row.dataset.journal;
-          
-                  // Remove from table
-                  row.remove();
-          
-                  // Uncheck the corresponding checkbox
-                  document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
-                      if (checkbox.dataset.journal === journal) {
-                          checkbox.checked = false;
-                      }
-                  });
-          
-                  // 👉 RIGHT HERE: also remove from selectedJournals
-                  selectedJournals = selectedJournals.filter(name => name !== journal);
-          
-                  // Hide comparison container if no rows left
-                  if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
-                      document.getElementById('comparison-container').style.display = 'none';
+              button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const journal = row.dataset.journal;
+                
+                // Remove from table
+                row.remove();
+                
+                // Uncheck the corresponding checkbox
+                document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
+                  if (checkbox.dataset.journal === journal) {
+                    checkbox.checked = false;
                   }
+                });
+                
+                // Remove from selectedJournals array
+                selectedJournals = selectedJournals.filter(name => name !== journal);
+                
+                // Hide comparison container if no rows left
+                if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
+                  container.style.display = 'none';
+                }
               });
-          });
-          
-        });
-
-        function sortTable(columnIndex, headerElement) {
-          const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
-      
-          // Copy data to sort: use originalData if no filters are applied
-          const dataToSort = filteredData.length === originalData.length ? [...originalData] : [...filteredData];
-      
-          // Sort data based on column index
-          dataToSort.sort((a, b) => {
-              let valueA = a[columnIndex] || 0; // Default to 0 for empty or missing values
-              let valueB = b[columnIndex] || 0;
-      
-              // Ensure numeric comparison
-              if (!isNaN(valueA) && !isNaN(valueB)) {
-                  valueA = parseFloat(valueA);
-                  valueB = parseFloat(valueB);
-              } else {
-                  // Fallback to text comparison for non-numeric values
-                  valueA = valueA.toString().toLowerCase();
-                  valueB = valueB.toString().toLowerCase();
-              }
-      
-              // Ascending and descending sorting
-              if (order === "asc") {
-                  return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
-              } else {
-                  return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
-              }
-          });
-        
-filteredData = [...dataToSort];
-    currentPage = 1;
-
-    // Reset all header indicators and update current header
-    document.querySelectorAll("th.sortable").forEach(th => {
-        th.dataset.order = "none";
-        th.classList.remove("ascending", "descending");
-    });
-    headerElement.dataset.order = order;
-    headerElement.classList.add(order === "asc" ? "ascending" : "descending");
-
-    // Re-render table
-    renderTableRows(filteredData);
-    updatePagination(filteredData.length);
-}
-
-// Attach sorting functionality to sortable headers
-document.querySelectorAll("th.sortable").forEach((th) => {
-    th.addEventListener("click", () => {
-        const columnIndex = parseInt(th.dataset.column);
-        sortTable(columnIndex, th);
-    });
-});
-
-// Function to apply filters
-function filterData() {
-  const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
-  const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
-
-  filteredData = originalData.filter(row => {
-      const journalMatch = row[0].toLowerCase().includes(journalInput);
-      const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
-      return journalMatch && categoryMatch;
-  });
-
-  // Reset pagination and re-render the table
-  currentPage = 1;
-  renderTableRows(filteredData);
-  updatePagination(filteredData.length);
-}
-
-
-// Attach filter logic to all input fields
-document.querySelectorAll('.filter-input').forEach(input => {
-  input.addEventListener('input', filterData);
-});
-        
-        fetch('datos.json')
-          .then(response => response.json())
-          .then(data => {
-            originalData = data.map(row => Object.values(row));
-            filteredData = [...originalData];
-            renderTableRows(filteredData);
-            updatePagination(filteredData.length);
-          })
-          .catch(error => console.error('Error loading data:', error));
+            });
+          }
+        }
       </script>
     </body>
     </html>
