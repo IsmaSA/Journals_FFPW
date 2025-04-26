@@ -77,7 +77,7 @@
             text-align: center;
             margin: 20px 0;
             font-size: 2.5rem;
-            color: #0056b3; /* Darker blue */
+            color: #0056b3; 
         }
     
         table {
@@ -366,6 +366,8 @@ strong {
         let currentPage = 1;
         let filteredData = [];
         let originalData = [];
+        let selectedJournals = [];
+
     
         function renderTableRows(data) {
           const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
@@ -377,13 +379,30 @@ strong {
             const row = tableBody.insertRow();
             row.classList.add('data-row');
     
-            // Add compare checkbox
             const compareCell = row.insertCell();
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
             checkbox.className = 'compare-checkbox';
             checkbox.dataset.journal = data[i][0];
+            
+            // 👉 Check if this journal is already selected
+            if (selectedJournals.includes(data[i][0])) {
+                checkbox.checked = true;
+            }
+            
+            checkbox.addEventListener('change', function() {
+                const journalName = this.dataset.journal;
+                if (this.checked) {
+                    if (!selectedJournals.includes(journalName)) {
+                        selectedJournals.push(journalName);
+                    }
+                } else {
+                    selectedJournals = selectedJournals.filter(name => name !== journalName);
+                }
+            });
+            
             compareCell.appendChild(checkbox);
+            
     
             data[i].forEach(cell => {
               const newCell = row.insertCell();
@@ -523,13 +542,11 @@ strong {
         });
     
         document.getElementById('compare-btn').addEventListener('click', () => {
-            const selectedJournals = Array.from(document.querySelectorAll('.compare-checkbox:checked'))
-                .map(checkbox => checkbox.dataset.journal);
+          if (selectedJournals.length < 2) {
+            alert('Please select at least two journals to compare.');
+            return;
+        }
         
-            if (selectedJournals.length < 2) {
-                alert('Please select at least two journals to compare.');
-                return;
-            }
         
             const comparisonRows = filteredData.filter(row => selectedJournals.includes(row[0]));
         
@@ -568,26 +585,30 @@ strong {
         
             // Add remove logic to each remove button
             document.querySelectorAll('.remove-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    const row = this.closest('tr');
-                    const journal = row.dataset.journal;
-        
-                    // Remove from table
-                    row.remove();
-        
-                    // Uncheck the corresponding checkbox
-                    document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
-                        if (checkbox.dataset.journal === journal) {
-                            checkbox.checked = false;
-                        }
-                    });
-        
-                    // Hide comparison container if no rows left
-                    if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
-                        container.style.display = 'none';
-                    }
-                });
-            });
+              button.addEventListener('click', function () {
+                  const row = this.closest('tr');
+                  const journal = row.dataset.journal;
+          
+                  // Remove from table
+                  row.remove();
+          
+                  // Uncheck the corresponding checkbox
+                  document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
+                      if (checkbox.dataset.journal === journal) {
+                          checkbox.checked = false;
+                      }
+                  });
+          
+                  // 👉 RIGHT HERE: also remove from selectedJournals
+                  selectedJournals = selectedJournals.filter(name => name !== journal);
+          
+                  // Hide comparison container if no rows left
+                  if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
+                      document.getElementById('comparison-container').style.display = 'none';
+                  }
+              });
+          });
+          
         });
 
         function sortTable(columnIndex, headerElement) {
