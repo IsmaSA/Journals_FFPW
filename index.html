@@ -356,7 +356,6 @@ strong {
       <!-- Compare Button -->
       <button id="compare-btn">Compare Selected Journals</button>
     
-      <!-- Comparison Output -->
       <div id="comparison-container"></div>
     
       <div class="pagination" id="pagination"></div>
@@ -384,7 +383,6 @@ strong {
             checkbox.className = 'compare-checkbox';
             checkbox.dataset.journal = data[i][0];
         
-            // Aquí corregimos:
             checkbox.checked = selectedJournals.includes(data[i][0]);
         
             checkbox.addEventListener('change', function() {
@@ -396,13 +394,11 @@ strong {
               } else {
                 selectedJournals = selectedJournals.filter(name => name !== journalName);
               }
-              // Actualizar visualmente todas las checkboxes aunque filtres
               updateCheckboxes();
             });
         
             compareCell.appendChild(checkbox);
         
-            // Add the rest of the cells
             data[i].forEach(cell => {
               const newCell = row.insertCell();
               newCell.textContent = cell;
@@ -417,7 +413,6 @@ strong {
           }
         }
         
-        // Función nueva para actualizar los checkboxes
         function updateCheckboxes() {
           document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
             checkbox.checked = selectedJournals.includes(checkbox.dataset.journal);
@@ -431,7 +426,6 @@ strong {
           const totalPages = Math.ceil(totalRows / rowsPerPage);
           const maxVisiblePages = 5;
         
-          // Don't show pagination if there's only one page
           if (totalPages <= 1) return;
         
           const createPageButton = (text, isActive, callback) => {
@@ -515,12 +509,10 @@ strong {
         renderTableRows(filteredData);
         updatePagination(filteredData.length);
         
-        // <<<<<<<<<<<<<< NUEVO >>>>>>>>>>>>>>
         updateCheckboxes();
       }
       
       
-      // Attach filter logic to all input fields
       document.querySelectorAll('.filter-input').forEach(input => {
         input.addEventListener('input', filterData);
       });
@@ -557,7 +549,7 @@ strong {
         
           const suggestions = originalData
             .map(row => row[0])
-            .filter((journal, index, self) => self.indexOf(journal) === index) // Get unique values
+            .filter((journal, index, self) => self.indexOf(journal) === index) 
             .filter(journal => journal.toLowerCase().includes(input))
             .slice(0, 5);
         
@@ -565,32 +557,25 @@ strong {
         }
         
         function sortTable(columnIndex, headerElement) {
-          // Default to ascending if no order set
           const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
           
-          // Copy data to sort
           const dataToSort = [...filteredData];
           
-          // Sort data based on column index
           dataToSort.sort((a, b) => {
             let valueA = a[columnIndex];
             let valueB = b[columnIndex];
             
-            // Handle potentially missing values
             if (valueA === undefined) valueA = "";
             if (valueB === undefined) valueB = "";
             
-            // Ensure numeric comparison when appropriate
             if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
               valueA = parseFloat(valueA);
               valueB = parseFloat(valueB);
             } else {
-              // Fallback to text comparison for non-numeric values
               valueA = String(valueA).toLowerCase();
               valueB = String(valueB).toLowerCase();
             }
             
-            // Ascending and descending sorting
             if (order === "asc") {
               return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
             } else {
@@ -598,11 +583,9 @@ strong {
             }
           });
           
-          // Update filtered data and reset to page 1
           filteredData = dataToSort;
           currentPage = 1;
           
-          // Reset all header indicators and update current header
           document.querySelectorAll("th.sortable").forEach(th => {
             th.dataset.order = "none";
             th.classList.remove("ascending", "descending");
@@ -611,12 +594,10 @@ strong {
           headerElement.dataset.order = order;
           headerElement.classList.add(order === "asc" ? "ascending" : "descending");
           
-          // Re-render table and update pagination
           renderTableRows(filteredData);
           updatePagination(filteredData.length);
         }
         
-        // Setup event listeners when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
           // Journal filter input events
           const journalFilter = document.getElementById('journal-filter');
@@ -636,19 +617,16 @@ strong {
             });
           }
         
-          // Set up category filter
           const categoryFilter = document.querySelector('.filter-input:nth-child(2)');
           if (categoryFilter) {
             categoryFilter.addEventListener('input', filterData);
           }
           
-          // Compare button
           const compareBtn = document.getElementById('compare-btn');
           if (compareBtn) {
             compareBtn.addEventListener('click', createComparisonTable);
           }
           
-          // Attach sorting functionality to sortable headers
           document.querySelectorAll("th.sortable").forEach((th) => {
             if (th && th.dataset.column !== undefined) {
               th.addEventListener("click", () => {
@@ -721,26 +699,21 @@ if (container) {
 container.innerHTML = html;
 container.style.display = 'block';
 
-// Agregar lógica para los botones de eliminar
 document.querySelectorAll('.remove-btn').forEach(button => {
   button.addEventListener('click', function() {
     const row = this.closest('tr');
     const journal = row.dataset.journal;
 
-    // Quitar de la tabla
     row.remove();
 
-    // Desmarcar checkbox
     document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
       if (checkbox.dataset.journal === journal) {
         checkbox.checked = false;
       }
     });
 
-    // Eliminar del array de seleccionados
     selectedJournals = selectedJournals.filter(name => name !== journal);
 
-    // Ocultar si no queda ninguno
     if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
       container.style.display = 'none';
     }
