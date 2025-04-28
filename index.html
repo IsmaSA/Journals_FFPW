@@ -383,25 +383,25 @@ strong {
             checkbox.type = 'checkbox';
             checkbox.className = 'compare-checkbox';
             checkbox.dataset.journal = data[i][0];
-            
-            // Check if this journal is already selected
-            if (selectedJournals.includes(data[i][0])) {
-                checkbox.checked = true;
-            }
-            
+        
+            // Aquí corregimos:
+            checkbox.checked = selectedJournals.includes(data[i][0]);
+        
             checkbox.addEventListener('change', function() {
-                const journalName = this.dataset.journal;
-                if (this.checked) {
-                    if (!selectedJournals.includes(journalName)) {
-                        selectedJournals.push(journalName);
-                    }
-                } else {
-                    selectedJournals = selectedJournals.filter(name => name !== journalName);
+              const journalName = this.dataset.journal;
+              if (this.checked) {
+                if (!selectedJournals.includes(journalName)) {
+                  selectedJournals.push(journalName);
                 }
+              } else {
+                selectedJournals = selectedJournals.filter(name => name !== journalName);
+              }
+              // Actualizar visualmente todas las checkboxes aunque filtres
+              updateCheckboxes();
             });
-            
+        
             compareCell.appendChild(checkbox);
-            
+        
             // Add the rest of the cells
             data[i].forEach(cell => {
               const newCell = row.insertCell();
@@ -409,7 +409,6 @@ strong {
             });
         
             row.addEventListener('click', (event) => {
-              // Prevent toggling the checkbox when clicking the row
               if (event.target.type !== 'checkbox') {
                 document.querySelectorAll('.data-row').forEach(r => r.classList.remove('selected'));
                 row.classList.add('selected');
@@ -417,6 +416,14 @@ strong {
             });
           }
         }
+        
+        // Función nueva para actualizar los checkboxes
+        function updateCheckboxes() {
+          document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
+            checkbox.checked = selectedJournals.includes(checkbox.dataset.journal);
+          });
+        }
+        
         
         function updatePagination(totalRows) {
           const paginationDiv = document.getElementById('pagination');
@@ -498,15 +505,18 @@ strong {
         const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
       
         filteredData = originalData.filter(row => {
-            const journalMatch = row[0].toLowerCase().includes(journalInput);
-            const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
-            return journalMatch && categoryMatch;
+          const journalMatch = row[0].toLowerCase().includes(journalInput);
+          const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
+          return journalMatch && categoryMatch;
         });
       
         // Reset pagination and re-render the table
         currentPage = 1;
         renderTableRows(filteredData);
         updatePagination(filteredData.length);
+        
+        // <<<<<<<<<<<<<< NUEVO >>>>>>>>>>>>>>
+        updateCheckboxes();
       }
       
       
@@ -675,69 +685,69 @@ strong {
             return;
           }
           
-          const comparisonRows = filteredData.filter(row => selectedJournals.includes(row[0]));
+          const comparisonRows = originalData.filter(row => selectedJournals.includes(row[0]));
           
           let html = `<h3>Journal Comparison</h3>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>Journal</th>
-                            <th>Category</th>
-                            <th>Impact Factor</th>
-                            <th>AIS</th>
-                            <th>Ranking</th>
-                            <th>Quartile</th>
-                            <th>Remove</th>
-                          </tr>
-                        </thead>
-                        <tbody id="comparison-table-body">`;
-          
-          comparisonRows.forEach(row => {
-            html += `<tr data-journal="${row[0]}">
-                      <td>${row[0]}</td>  <!-- Journal -->
-                      <td>${row[2]}</td>  <!-- Category -->
-                      <td>${row[3]}</td>  <!-- Impact Factor -->
-                      <td>${row[4]}</td>  <!-- AIS -->
-                      <td>${row[5]}</td>  <!-- Ranking -->
-                      <td>${row[6]}</td>  <!-- Quartile -->
-                      <td><button class="remove-btn" title="Remove">&#128465;</button></td>
-                    </tr>`;
-          });
-          
-          html += `</tbody></table>`;
-          
-          const container = document.getElementById('comparison-container');
-          if (container) {
-            container.innerHTML = html;
-            container.style.display = 'block';
-            
-            // Add remove logic to each remove button
-            document.querySelectorAll('.remove-btn').forEach(button => {
-              button.addEventListener('click', function() {
-                const row = this.closest('tr');
-                const journal = row.dataset.journal;
-                
-                // Remove from table
-                row.remove();
-                
-                // Uncheck the corresponding checkbox
-                document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
-                  if (checkbox.dataset.journal === journal) {
-                    checkbox.checked = false;
-                  }
-                });
-                
-                // Remove from selectedJournals array
-                selectedJournals = selectedJournals.filter(name => name !== journal);
-                
-                // Hide comparison container if no rows left
-                if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
-                  container.style.display = 'none';
-                }
-              });
-            });
-          }
-        }
+          <table>
+            <thead>
+              <tr>
+                <th>Journal</th>
+                <th>Category</th>
+                <th>Impact Factor</th>
+                <th>AIS</th>
+                <th>Ranking</th>
+                <th>Quartile</th>
+                <th>Remove</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-table-body">`;
+
+comparisonRows.forEach(row => {
+html += `<tr data-journal="${row[0]}">
+            <td>${row[0]}</td>  <!-- Journal -->
+            <td>${row[2]}</td>  <!-- Category -->
+            <td>${row[3]}</td>  <!-- Impact Factor -->
+            <td>${row[4]}</td>  <!-- AIS -->
+            <td>${row[5]}</td>  <!-- Ranking -->
+            <td>${row[6]}</td>  <!-- Quartile -->
+            <td><button class="remove-btn" title="Remove">&#128465;</button></td>
+          </tr>`;
+});
+
+html += `</tbody></table>`;
+
+const container = document.getElementById('comparison-container');
+if (container) {
+container.innerHTML = html;
+container.style.display = 'block';
+
+// Agregar lógica para los botones de eliminar
+document.querySelectorAll('.remove-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const row = this.closest('tr');
+    const journal = row.dataset.journal;
+
+    // Quitar de la tabla
+    row.remove();
+
+    // Desmarcar checkbox
+    document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
+      if (checkbox.dataset.journal === journal) {
+        checkbox.checked = false;
+      }
+    });
+
+    // Eliminar del array de seleccionados
+    selectedJournals = selectedJournals.filter(name => name !== journal);
+
+    // Ocultar si no queda ninguno
+    if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
+      container.style.display = 'none';
+    }
+  });
+});
+}
+}
       </script>
     </body>
     </html>
