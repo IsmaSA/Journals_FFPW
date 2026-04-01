@@ -6,3 +6,4 @@ I have added manually this:
 ## To Do List: 
 -   Fix AIS of: ANNUAL REVIEW OF ECOLOGY EVOLUTION AND SYSTEMATICS  ==>  5.866  (DONE)
 -   Add suggestion mode to the "Subject" column
+-   Add a search bar in the AIS column
