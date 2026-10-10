@@ -29,7 +29,7 @@ Columns: journal_name, year, subject_area_name, Impact.Factor, Article.Influence
 
 ## Design principles
 - Real data only. No statistical trend claims: three years are not a trend; the UI says so near every year chart.
-- Never colour alone: improved/declined use teal/ochre **plus** arrows and words; quartiles use an ordinal teal scale plus text labels. IF/AIS changes are neutral.
+- Never colour alone: quartiles are always shown as text labels (D1/Q1-Q4) in the charts and tables.
 - Hover card is mouse-only; click/tap/Enter opens the same information inline.
 - Core element: the "position in category" chart (path through quartile bands).
 
