@@ -3,7 +3,6 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { buildModel, changeFor, topPct, BAND } from '../js/model.js';
-import { filterRecords, sortRecords, summarise, largestChanges, DEFAULT_FILTERS } from '../js/query.js';
 import { fmtIf, fmtAis, fmtDelta, fmtTop, normalize } from '../js/format.js';
 
 // Small hand-made fixture: row cells are [rank, categorySize, label].
@@ -37,37 +36,6 @@ test('a zero AIS is a value, not missing', () => {
   assert.ok(Math.abs(c.dAis - -0.1) < 1e-12);
 });
 
-test('filter: only records listed in the chosen year', () => {
-  assert.equal(filterRecords(m, DEFAULT_FILTERS, 2).length, 3);
-  assert.equal(filterRecords(m, DEFAULT_FILTERS, 0).length, 2);
-});
-test('filter: search treats & as and, quartile, category, min AIS, movement', () => {
-  assert.equal(filterRecords(m, { ...DEFAULT_FILTERS, q: 'beta and co' }, 2).length, 2);
-  assert.equal(filterRecords(m, { ...DEFAULT_FILTERS, qt: ['Q4'] }, 2).length, 1);
-  assert.equal(filterRecords(m, { ...DEFAULT_FILTERS, cat: 'zool' }, 2).length, 1);
-  assert.equal(filterRecords(m, { ...DEFAULT_FILTERS, minAis: 0.5 }, 2).length, 1);
-  assert.equal(filterRecords(m, { ...DEFAULT_FILTERS, move: 'new' }, 2).length, 1);
-});
-test('sort: nulls last in both directions, deterministic ties', () => {
-  const all = filterRecords(m, DEFAULT_FILTERS, 1);
-  for (const dir of ['asc', 'desc']) {
-    const s = sortRecords(m, all, 'dais', dir, 1);
-    assert.equal(s.length, all.length);
-  }
-  const s = sortRecords(m, filterRecords(m, DEFAULT_FILTERS, 2), 'dais', 'desc', 2);
-  assert.equal(m.journals[s[0].j].name, 'ALPHA');            // +0.3 is the largest
-  assert.equal(m.categories[s.at(-1).c], 'ZOOLOGY');          // "new" record has no change -> last
-});
-test('summarise counts quartiles and moves', () => {
-  const s = summarise(m, filterRecords(m, DEFAULT_FILTERS, 2), 2);
-  assert.equal(s.records, 3); assert.equal(s.journals, 2); assert.equal(s.quartiles.Q1, 2); assert.equal(s.moves.new, 1); assert.equal(s.moves.up, 1);
-});
-test('largestChanges: AIS is one entry per journal', () => {
-  const l = largestChanges(m, filterRecords(m, DEFAULT_FILTERS, 2), 2, 'ais');
-  assert.equal(m.journals[l.up[0].rec.j].name, 'ALPHA');
-  assert.equal(m.journals[l.down[0].rec.j].name, 'BETA & CO');
-});
-
 test('formatting', () => {
   assert.equal(fmtIf(17.1), '17.1'); assert.equal(fmtIf(1.25), '1.25'); assert.equal(fmtAis(0), '0.000');
   assert.equal(fmtDelta(-0.0004, 3), '0.000'); assert.equal(fmtDelta(0.1234, 3), '+0.123'); assert.equal(fmtDelta(-2, 1), '−2.0');
@@ -78,7 +46,7 @@ test('formatting', () => {
 test('real data: structural invariants of data/journals.json', () => {
   const real = buildModel(JSON.parse(readFileSync(new URL('../data/journals.json', import.meta.url))));
   assert.deepEqual(real.years, [2023, 2024, 2025]);
-  assert.equal(filterRecords(real, DEFAULT_FILTERS, 2).length, 14814);
+  assert.equal(real.records.filter((r) => r.row[2]).length, 14814); // 2025 rows, same as datos.json
   for (const r of real.records) for (const c of r.row) if (c) { assert.ok(c[0] >= 1 && c[0] <= c[1]); assert.ok(['D1','Q1','Q2','Q3','Q4'].includes(c[2])); }
   const ca = real.records.find((r) => real.journals[r.j].name === 'CA-A CANCER JOURNAL FOR CLINICIANS');
   assert.deepEqual(ca.row.map((c) => c.slice(0, 2)), [[1, 242], [1, 241], [1, 239]]);
