@@ -1,726 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
-  
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal's metadata</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #FFFFFF; /* Light blue background */
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: #FFFFFF; /* Blue header */
-            color: white;
-        }
-    
-        .header img {
-            max-width: 150px;
-            height: auto;
-        }
-    
-        .developer {
-            font-size: 12px;
-            color: rgb(15, 1, 1);
-        }
-        /* Footer layout */
-.footer-content {
-    display: flex;
-    justify-content: space-between; /* Space between left, center, and right */
-    align-items: center; /* Vertically align items */
-    flex-wrap: wrap; /* Allow wrapping for small screens */
-    text-align: center;
-    width: 90%;
-    margin: 0 auto;
-}
-
-/* Footer center content */
-.footer-center {
-    flex: 1; /* Allow it to occupy the middle space */
-    text-align: center;
-    font-weight: bold;
-}
-
-/* Footer right content */
-.footer-right {
-    text-align: right;
-    flex: 1; /* Align the right section properly */
-    font-size: 14px;
-}
-
-/* Footer link styles */
-.footer-link {
-    color: #004085; /* Dark blue text */
-    text-decoration: none; /* Remove underline by default */
-    font-weight: bold; /* Bold text */
-    font-size: 14px; /* Match desired size */
-}
-
-.footer-link:hover {
-    text-decoration: underline; /* Underline on hover */
-    color: #007bff; /* Slightly lighter blue on hover */
-}
-
-.footer p {
-    margin: 5px 0; /* Clean spacing between lines */
-}
-
-        
-        h1 {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 2.5rem;
-            color: #0056b3; 
-        }
-    
-        table {
-            border-collapse: collapse;
-            width: 90%;
-            margin: 20px auto;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            background-color: white;
-        }
-    
-        th, td {
-            border: 1px solid #ddd;
-            text-align: left;
-            padding: 10px;
-        }
-    
-        th {
-            background-color: #cce5ff; /* Light blue for headers */
-            color: #004085; /* Dark blue text */
-            font-weight: bold;
-        }
-    
-        tr:nth-child(even) {
-            background-color: #e9f7ff; /* Subtle blue for alternating rows */
-        }
-    
-        tr:hover {
-            background-color: #b3d9ff; /* Highlighted blue */
-            cursor: pointer;
-        }
-    
-        tr.selected {
-            background-color: #007bff; /* Blue for selected row */
-            color: white;
-        }
-/* Default light blue arrow for sortable headers */
-th.sortable::after {
-    content: " ▲"; /* Default ascending arrow */
-    color: rgb(149, 184, 227); /* Light blue */
-    font-size: 0.8em;
-    visibility: visible; /* Always visible */
-}
-
-/* Style when column is being sorted in ascending order */
-th.sortable.ascending::after {
-    content: " ▲"; /* Ascending arrow */
-    color: #007bff; /* Dark blue */
-}
-
-/* Style when column is being sorted in descending order */
-th.sortable.descending::after {
-    content: " ▼"; /* Descending arrow */
-    color: #007bff; /* Dark blue */
-}
-th.sortable:hover {
-    background-color: #0056b3;
-    color: white;
-    cursor: pointer;
-}
-
-
-        .filter-input {
-            width: 100%;
-            padding: 5px;
-            margin-bottom: 5px;
-            border: 1px solid #007bff;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-    
-        .filter-input:focus {
-            outline: 2px solid #0056b3; /* Focus on inputs */
-        }
-   
-        
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-            font-family: Arial, sans-serif;
-        }
-        
-        .pagination button, .pagination span {
-            padding: 8px 12px;
-            margin: 0 2px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            color: #007bff;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        
-        .pagination button:hover {
-            background-color: #e9ecef;
-            border-color: #007bff;
-        }
-        
-        .pagination button:disabled {
-            background-color: #f8f9fa;
-            color: #aaa;
-            border-color: #ddd;
-            cursor: not-allowed;
-        }
-        
-        .pagination .active {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-            cursor: default;
-        }
-        
-        .pagination span {
-            background-color: transparent;
-            border: none;
-            color: #6c757d;
-            cursor: default;
-            padding: 8px 6px;
-        }
-        /* AIS Ratio Box Styling */
-.ais-box {
-    background-color: #f8f9fa; /* Light gray background */
-    border: 1px solid #ddd; /* Subtle border */
-    border-radius: 8px; /* Rounded corners */
-    padding: 15px 20px;
-    margin: 20px auto; /* Space above and below */
-    width: 90%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Light box shadow */
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-}
-
-/* Center the formula and align AIS Ratio */
-.ais-formula {
-    text-align: center;
-    position: relative;
-}
-
-.fraction {
-    display: inline-block;
-    text-align: center;
-    position: relative;
-    line-height: 1.2;
-}
-
-.formula-line {
-    border: none;
-    border-top: 2px solid #000;
-    width: 120px;
-    margin: 4px auto;
-}
-
-.ais-ratio {
-    font-weight: bold;
-    font-size: 18px;
-    position: relative;
-    top: -17px; /* Adjust upward movement */
-    display: inline-block;
-}
-
-.autocomplete-suggestions {
-    max-height: 150px;
-    overflow-y: auto;
-    position: absolute;
-    background: white;
-    z-index: 1000;
-    width: calc(100% - 2px); /* Match input width */
-}
-.autocomplete-suggestion {
-    padding: 5px;
-    cursor: pointer;
-}
-.autocomplete-suggestion:hover {
-    background-color: #f0f0f0;
-}
-
-strong {
-    color: #0056b3; /* Highlighted blue for strong text */
-}
-.compare-checkbox {
-    transform: scale(1.2);
-    cursor: pointer;
-}
-
-#comparison-container {
-    display: none;
-    width: 90%;
-    margin: 20px auto;
-    padding: 15px;
-    border: 1px solid #ccc;
-    background: #f9f9f9;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-#comparison-container table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-#comparison-container th, #comparison-container td {
-    border: 1px solid #999;
-    padding: 8px;
-    text-align: center;
-}
-
-#compare-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    margin: 20px auto;
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 16px;
-    display: block;
-}
-
-#compare-btn:hover {
-    background-color: #0056b3;
-}
-.remove-btn {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 4px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.remove-btn:hover {
-    background-color: #c82333;
-}
-
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Journal metrics | Faculty of Fisheries and Protection of Waters</title>
+  <meta name="description" content="Impact Factor, Article Influence Score and category position of journals, with year-to-year change. Faculty of Fisheries and Protection of Waters.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" type="image/png" href="image/favicon.png">
+  <link rel="apple-touch-icon" href="image/apple-touch-icon.png">
+  <link rel="preload" href="fonts/fira-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/fira-sans-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/source-serif-4-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="data/journals.json" as="fetch" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="js/main.js"></script>
 </head>
 <body>
-    <div class="header">
-        <img src="image/icon.jpg" alt="ICON">
-        <div class="developer">Developed by Ismael Soto (isma-sa@hotmail.com)</div>
-    </div>
-    <h1>Journal's metadata</h1>
-    <div class="ais-box">
-        <p>
-            <strong>Ranking</strong> refers to the journal's position in the <strong>given Category</strong> (according to the AIS scores).
+  <a class="skip" href="#table-top">Skip to the journal table</a>
 
-        <p>
-            <strong>AIS Quartile</strong> are based on the <strong>Ranking</strong>.
-        </p>
+  <header class="masthead">
+    <div class="wrap masthead-row">
+      <img class="logo" src="image/icon.jpg" width="994" height="380" alt="Fakulta rybářství a ochrany vod, Faculty of Fisheries and Protection of Waters">
+      <button type="button" id="about-btn" class="btn btn-quiet" aria-expanded="false" aria-controls="about">About the data</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="wrap intro" aria-labelledby="page-title">
+      <h1 id="page-title">Journal metrics</h1>
+      <p class="lead">Impact Factor, Article Influence Score and each journal&rsquo;s position in its category, <span id="data-years">2023&ndash;2025</span>. Hover over a row, or tap it, to see how the journal changed between years.</p>
+    </section>
+
+    <section id="about" class="wrap about" aria-labelledby="about-title" hidden>
+      <h2 id="about-title">About the data</h2>
+      <dl>
+        <div><dt>Impact Factor (IF) and Article Influence Score (AIS)</dt>
+          <dd>Journal-level values: a journal has the same IF and AIS in every category it is listed in.</dd></div>
+        <div><dt>Rank in category</dt>
+          <dd>The journal&rsquo;s position in a category, ordered by AIS (1 is highest). &ldquo;39 / 107&rdquo; means 39th of 107. Category sizes change from year to year, so positions are also shown as &ldquo;top&nbsp;x%&rdquo; (rank divided by category size), which can be compared across years.</dd></div>
+        <div><dt>Quartile</dt>
+          <dd>The faculty quartile based on the rank, shown as supplied in the source files. D1 is a top-decile label that appears in the 2024 and 2025 files only. To compare years, change over time counts D1 within Q1.</dd></div>
+        <div><dt>Change since the previous year</dt>
+          <dd>Compares a record with the year immediately before it: its quartile band moved up, moved down or stayed the same. A record missing from the previous year is reported as not listed, never as zero, and years are not skipped.</dd></div>
+        <div><dt>Missing values</dt>
+          <dd>A dash means the journal was not listed in that category that year. A zero is a value the source reports as zero.</dd></div>
+        <div><dt>Journals across years</dt>
+          <dd>Journals are matched by name, ignoring capitals, &ldquo;&amp;&rdquo; versus &ldquo;and&rdquo; and hyphens. The files have no ISSN, so a journal that changed its title appears as separate entries.</dd></div>
+      </dl>
+      <p id="about-dup"></p>
+      <p id="data-meta" class="about-meta"></p>
+    </section>
+
+    <div id="status" class="wrap status" role="status">Loading journal data&hellip;</div>
+
+    <div id="app" hidden aria-busy="true">
+      <form id="filters" class="wrap filters" role="search" aria-label="Filter and sort the journals" autocomplete="off">
+        <div class="f-row">
+          <div class="field field-grow">
+            <label for="f-q">Journal</label>
+            <input id="f-q" type="search" placeholder="Search by journal name" spellcheck="false">
+          </div>
+          <div class="field field-grow">
+            <label for="f-cat">Category</label>
+            <input id="f-cat" type="text" list="cat-list" placeholder="Type to find a category" spellcheck="false">
+            <datalist id="cat-list"></datalist>
+          </div>
+          <fieldset class="field">
+            <legend>Year</legend>
+            <div id="f-year" class="segmented"></div>
+          </fieldset>
+        </div>
+        <div class="f-row">
+          <fieldset class="field">
+            <legend>Quartile</legend>
+            <div id="f-qt" class="qt-chips">
+              <button type="button" data-q="D1" aria-pressed="false">D1</button>
+              <button type="button" data-q="Q1" aria-pressed="false">Q1</button>
+              <button type="button" data-q="Q2" aria-pressed="false">Q2</button>
+              <button type="button" data-q="Q3" aria-pressed="false">Q3</button>
+              <button type="button" data-q="Q4" aria-pressed="false">Q4</button>
+            </div>
+          </fieldset>
+          <div class="field">
+            <label for="f-move">Change</label>
+            <select id="f-move">
+              <option value="">Any change</option>
+              <option value="up">Moved up a quartile band</option>
+              <option value="down">Moved down a quartile band</option>
+              <option value="same">Same quartile band</option>
+              <option value="new">Not listed earlier</option>
+            </select>
+          </div>
+          <div class="field field-num">
+            <label for="f-minais">Min. AIS</label>
+            <input id="f-minais" type="number" min="0" step="0.1" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field field-num">
+            <label for="f-minif">Min. IF</label>
+            <input id="f-minif" type="number" min="0" step="0.5" inputmode="decimal" placeholder="0">
+          </div>
+          <div class="field">
+            <label for="f-sort">Sort by</label>
+            <div class="inline">
+              <select id="f-sort"></select>
+              <button type="button" id="f-dir" class="btn btn-quiet"></button>
+            </div>
+          </div>
+          <button type="button" id="f-reset" class="btn btn-quiet f-reset">Reset filters</button>
+        </div>
+      </form>
+
+      <section id="overview" class="overview" aria-label="Overview of the records in view">
+        <div id="overview-grid" class="wrap ov-grid"></div>
+      </section>
+
+      <section class="wrap tablewrap" aria-label="Journal table">
+        <div id="table-top" class="table-head">
+          <p id="result-count" class="result-count" aria-live="polite"></p>
+          <p class="hint">Open a row for charts and details. Tick up to four rows to compare them.</p>
         </div>
 
+        <table id="journal-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+
+        <div id="empty" class="empty" hidden>
+          <p><strong>No journals match these filters.</strong></p>
+          <p>Try a shorter search, another year, or fewer quartile and range filters.</p>
+          <button type="button" id="empty-reset" class="btn btn-primary">Reset filters</button>
+        </div>
+
+        <div class="pager">
+          <nav id="pagination" aria-label="Pagination"></nav>
+          <div class="pager-size">
+            <label for="f-pagesize" class="sr-only">Rows per page</label>
+            <select id="f-pagesize"></select>
+          </div>
+        </div>
+      </section>
     </div>
-    
-    <table id="tabla-datos">
-        <thead>
-          <tr>
-            <th>Compare</th> <!-- new column -->
-            <th>
-              <input id="journal-filter" class="filter-input" type="text" placeholder="Type journal name">
-              <div id="journal-suggestions" class="autocomplete-suggestions"></div>
-              Journal
-            </th>
-            <th>Year</th>
-            <th><input class="filter-input" type="text" placeholder="Use exact name">Category</th>
-            <th class="sortable" data-column="3" data-order="none">Impact Factor</th>
-            <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
-            <th>Ranking</th>
-            <th data-column="5" data-order="none">AIS Quartile</th>
-            <th>Database</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    
-      <!-- Compare Button -->
-      <button id="compare-btn">Compare Selected Journals</button>
-    
-      <div id="comparison-container"></div>
-    
-      <div class="pagination" id="pagination"></div>
-    
-      <script>
-        const rowsPerPage = 20;
-        let currentPage = 1;
-        let filteredData = [];
-        let originalData = [];
-        let selectedJournals = [];
-        
-        function renderTableRows(data) {
-          const tableBody = document.getElementById('tabla-datos').getElementsByTagName('tbody')[0];
-          tableBody.innerHTML = '';
-          const startIndex = (currentPage - 1) * rowsPerPage;
-          const endIndex = Math.min(startIndex + rowsPerPage, data.length);
-        
-          for (let i = startIndex; i < endIndex; i++) {
-            const row = tableBody.insertRow();
-            row.classList.add('data-row');
-        
-            const compareCell = row.insertCell();
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkbox.className = 'compare-checkbox';
-            checkbox.dataset.journal = data[i][0];
-        
-            checkbox.checked = selectedJournals.includes(data[i][0]);
-        
-            checkbox.addEventListener('change', function() {
-              const journalName = this.dataset.journal;
-              if (this.checked) {
-                if (!selectedJournals.includes(journalName)) {
-                  selectedJournals.push(journalName);
-                }
-              } else {
-                selectedJournals = selectedJournals.filter(name => name !== journalName);
-              }
-              updateCheckboxes();
-            });
-        
-            compareCell.appendChild(checkbox);
-        
-            data[i].forEach(cell => {
-              const newCell = row.insertCell();
-              newCell.textContent = cell;
-            });
-        
-            row.addEventListener('click', (event) => {
-              if (event.target.type !== 'checkbox') {
-                document.querySelectorAll('.data-row').forEach(r => r.classList.remove('selected'));
-                row.classList.add('selected');
-              }
-            });
-          }
-        }
-        
-        function updateCheckboxes() {
-          document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
-            checkbox.checked = selectedJournals.includes(checkbox.dataset.journal);
-          });
-        }
-        
-        
-        function updatePagination(totalRows) {
-          const paginationDiv = document.getElementById('pagination');
-          paginationDiv.innerHTML = '';
-          const totalPages = Math.ceil(totalRows / rowsPerPage);
-          const maxVisiblePages = 5;
-        
-          if (totalPages <= 1) return;
-        
-          const createPageButton = (text, isActive, callback) => {
-            const button = document.createElement('button');
-            button.textContent = text;
-            if (isActive) button.classList.add('active');
-            button.addEventListener('click', callback);
-            return button;
-          };
-        
-          const prevButton = createPageButton('Previous', false, () => {
-            if (currentPage > 1) {
-              currentPage--;
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            }
-          });
-          prevButton.disabled = currentPage === 1;
-          paginationDiv.appendChild(prevButton);
-        
-          let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-          let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-          if (endPage - startPage + 1 < maxVisiblePages) {
-            startPage = Math.max(1, endPage - maxVisiblePages + 1);
-          }
-        
-          if (startPage > 1) {
-            paginationDiv.appendChild(createPageButton(1, currentPage === 1, () => {
-              currentPage = 1;
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            }));
-            paginationDiv.appendChild(document.createElement('span')).textContent = '...';
-          }
-        
-          for (let i = startPage; i <= endPage; i++) {
-            paginationDiv.appendChild(createPageButton(i, currentPage === i, () => {
-              currentPage = i;
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            }));
-          }
-        
-          if (endPage < totalPages) {
-            paginationDiv.appendChild(document.createElement('span')).textContent = '...';
-            paginationDiv.appendChild(createPageButton(totalPages, currentPage === totalPages, () => {
-              currentPage = totalPages;
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            }));
-          }
-        
-          const nextButton = createPageButton('Next', false, () => {
-            if (currentPage < totalPages) {
-              currentPage++;
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            }
-          });
-          nextButton.disabled = currentPage === totalPages;
-          paginationDiv.appendChild(nextButton);
-        }
+  </main>
 
-      function normalizeText(str) {
-          if (!str) return "";
-          return str.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-      }
-      
-      function filterData() {
-        const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
-        const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
-      
-        filteredData = originalData.filter(row => {
-          const journalMatch = row[0].toLowerCase().includes(journalInput);
-          const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
-          return journalMatch && categoryMatch;
-        });
-      
-        // Reset pagination and re-render the table
-        currentPage = 1;
-        renderTableRows(filteredData);
-        updatePagination(filteredData.length);
-        
-        updateCheckboxes();
-      }
-      
-      
-      document.querySelectorAll('.filter-input').forEach(input => {
-        input.addEventListener('input', filterData);
-      });
+  <footer class="footer">
+    <div class="wrap footer-row">
+      <p>Developed by Ismael Soto (<a href="mailto:isma-sa@hotmail.com">isma-sa@hotmail.com</a>).</p>
+      <p>Yearly values show how journals differ between years; with only a few years they are not evidence of a statistical trend.</p>
+    </div>
+  </footer>
 
-        
-        function showSuggestions(input, suggestions) {
-          const suggestionsContainer = document.getElementById('journal-suggestions');
-          
-          if (!suggestionsContainer) return;
-          
-          suggestionsContainer.innerHTML = suggestions.map(journal => `
-            <div class="autocomplete-suggestion">${journal}</div>
-          `).join('');
-        
-          document.querySelectorAll('.autocomplete-suggestion').forEach(suggestion => {
-            suggestion.addEventListener('click', () => {
-              document.getElementById('journal-filter').value = suggestion.textContent;
-              suggestionsContainer.innerHTML = '';
-              filterData();
-            });
-          });
-        }
-        
-        function updateSuggestions() {
-          const input = document.getElementById('journal-filter').value.trim().toLowerCase();
-          const suggestionsContainer = document.getElementById('journal-suggestions');
-          
-          if (!suggestionsContainer) return;
-          
-          if (input === '') {
-            suggestionsContainer.innerHTML = '';
-            return;
-          }
-        
-          const suggestions = originalData
-            .map(row => row[0])
-            .filter((journal, index, self) => self.indexOf(journal) === index) 
-            .filter(journal => journal.toLowerCase().includes(input))
-            .slice(0, 5);
-        
-          showSuggestions(input, suggestions);
-        }
-        
-        function sortTable(columnIndex, headerElement) {
-          const order = headerElement.dataset.order === "asc" ? "desc" : "asc";
-          
-          const dataToSort = [...filteredData];
-          
-          dataToSort.sort((a, b) => {
-            let valueA = a[columnIndex];
-            let valueB = b[columnIndex];
-            
-            if (valueA === undefined) valueA = "";
-            if (valueB === undefined) valueB = "";
-            
-            if (!isNaN(parseFloat(valueA)) && !isNaN(parseFloat(valueB))) {
-              valueA = parseFloat(valueA);
-              valueB = parseFloat(valueB);
-            } else {
-              valueA = String(valueA).toLowerCase();
-              valueB = String(valueB).toLowerCase();
-            }
-            
-            if (order === "asc") {
-              return valueA > valueB ? 1 : valueA < valueB ? -1 : 0;
-            } else {
-              return valueA < valueB ? 1 : valueA > valueB ? -1 : 0;
-            }
-          });
-          
-          filteredData = dataToSort;
-          currentPage = 1;
-          
-          document.querySelectorAll("th.sortable").forEach(th => {
-            th.dataset.order = "none";
-            th.classList.remove("ascending", "descending");
-          });
-          
-          headerElement.dataset.order = order;
-          headerElement.classList.add(order === "asc" ? "ascending" : "descending");
-          
-          renderTableRows(filteredData);
-          updatePagination(filteredData.length);
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-          // Journal filter input events
-          const journalFilter = document.getElementById('journal-filter');
-          if (journalFilter) {
-            journalFilter.addEventListener('input', () => {
-              updateSuggestions();
-              filterData();
-            });
-            
-            journalFilter.addEventListener('keydown', function(event) {
-              if (event.key === 'Enter') {
-                const suggestionsContainer = document.getElementById('journal-suggestions');
-                if (suggestionsContainer) {
-                  suggestionsContainer.innerHTML = '';
-                }
-              }
-            });
-          }
-        
-          const categoryFilter = document.querySelector('.filter-input:nth-child(2)');
-          if (categoryFilter) {
-            categoryFilter.addEventListener('input', filterData);
-          }
-          
-          const compareBtn = document.getElementById('compare-btn');
-          if (compareBtn) {
-            compareBtn.addEventListener('click', createComparisonTable);
-          }
-          
-          document.querySelectorAll("th.sortable").forEach((th) => {
-            if (th && th.dataset.column !== undefined) {
-              th.addEventListener("click", () => {
-                const columnIndex = parseInt(th.dataset.column);
-                sortTable(columnIndex, th);
-              });
-            }
-          });
-          
-          // Load data
-          fetch('datos.json')
-            .then(response => {
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              return response.json();
-            })
-            .then(data => {
-              originalData = data.map(row => Object.values(row));
-              filteredData = [...originalData];
-              renderTableRows(filteredData);
-              updatePagination(filteredData.length);
-            })
-            .catch(error => {
-              console.error('Error loading data:', error);
-              document.getElementById('tabla-datos').innerHTML = 
-                '<tr><td colspan="7">Error loading data. Please try refreshing the page.</td></tr>';
-            });
-        });
-        
-        function createComparisonTable() {
-          if (selectedJournals.length < 2) {
-            alert('Please select at least two journals to compare.');
-            return;
-          }
-          
-          const comparisonRows = originalData.filter(row => selectedJournals.includes(row[0]));
-          
-          let html = `<h3>Journal Comparison</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Journal</th>
-                <th>Category</th>
-                <th>Impact Factor</th>
-                <th>AIS</th>
-                <th>Ranking</th>
-                <th>Quartile</th>
-                <th>Remove</th>
-              </tr>
-            </thead>
-            <tbody id="comparison-table-body">`;
+  <div id="hovercard" class="hovercard" role="tooltip" hidden></div>
 
-comparisonRows.forEach(row => {
-html += `<tr data-journal="${row[0]}">
-            <td>${row[0]}</td>  <!-- Journal -->
-            <td>${row[2]}</td>  <!-- Category -->
-            <td>${row[3]}</td>  <!-- Impact Factor -->
-            <td>${row[4]}</td>  <!-- AIS -->
-            <td>${row[5]}</td>  <!-- Ranking -->
-            <td>${row[6]}</td>  <!-- Quartile -->
-            <td><button class="remove-btn" title="Remove">&#128465;</button></td>
-          </tr>`;
-});
+  <aside id="tray" class="tray" aria-label="Comparison" hidden>
+    <div class="wrap tray-row">
+      <p id="tray-count" class="tray-count"></p>
+      <ul id="tray-chips" class="tray-chips"></ul>
+      <div class="tray-actions">
+        <button type="button" id="tray-clear" class="btn btn-quiet">Clear</button>
+        <button type="button" id="tray-go" class="btn btn-primary"></button>
+      </div>
+    </div>
+  </aside>
 
-html += `</tbody></table>`;
+  <dialog id="compare-dialog" aria-labelledby="cmp-title">
+    <div class="dlg-head">
+      <h2 id="cmp-title">Compare journals</h2>
+      <button type="button" id="compare-close" class="btn btn-quiet">Close</button>
+    </div>
+    <div id="compare-body" class="dlg-body"></div>
+  </dialog>
 
-const container = document.getElementById('comparison-container');
-if (container) {
-container.innerHTML = html;
-container.style.display = 'block';
-
-document.querySelectorAll('.remove-btn').forEach(button => {
-  button.addEventListener('click', function() {
-    const row = this.closest('tr');
-    const journal = row.dataset.journal;
-
-    row.remove();
-
-    document.querySelectorAll('.compare-checkbox').forEach(checkbox => {
-      if (checkbox.dataset.journal === journal) {
-        checkbox.checked = false;
-      }
+  <noscript><p class="wrap status status-error">This page needs JavaScript to show the journal table.</p></noscript>
+  <script>
+    // About panel toggle (inline so it works even if the module fails to load).
+    document.getElementById('about-btn').addEventListener('click', function () {
+      var panel = document.getElementById('about');
+      var open = panel.hidden;
+      panel.hidden = !open;
+      this.setAttribute('aria-expanded', String(open));
     });
-
-    selectedJournals = selectedJournals.filter(name => name !== journal);
-
-    if (document.querySelectorAll('#comparison-table-body tr').length === 0) {
-      container.style.display = 'none';
-    }
-  });
-});
-}
-}
-      </script>
-    </body>
-    </html>
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "journals-ffpw",
+  "private": true,
+  "type": "module",
+  "description": "Static site; no runtime dependencies. Scripts are for tests only.",
+  "scripts": { "test": "node --test tests/unit.test.mjs" }
+}
