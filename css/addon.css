@@ -1,0 +1,92 @@
+/* Additions on top of the original page: Trend position column, hover card and click detail.
+   Colours reuse the original blue palette (#004085, #0056b3, #007bff, #cce5ff, #e9f7ff). */
+:root {
+  --ink: #212529; --ink-2: #495057; --ink-3: #6c757d;
+  --surface: #fff; --line: #ddd; --line-strong: #999;
+  --brand-ink: #0056b3; --brand-wash: #cce5ff;
+  --band-1: #e3effc; --band-2: #eef5fd; --band-3: #f5f9fe; --band-4: #fbfdff;
+  --font-ui: Arial, sans-serif; --font-serif: Arial, sans-serif;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Row additions */
+th.trend-head { white-space: nowrap; }
+td.trend-cell { width: 76px; }
+.spark { display: block; }
+.spark-line { fill: none; stroke: #0056b3; stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.spark-dot { fill: #fff; stroke: #0056b3; stroke-width: 1.25; }
+.spark-dot-now { fill: #0056b3; }
+.spark-mid { stroke: #999; stroke-width: 1; stroke-dasharray: 2 3; }
+tr.selected .spark-line { stroke: #fff; }
+tr.selected .spark-dot { fill: #007bff; stroke: #fff; }
+tr.selected .spark-dot-now { fill: #fff; }
+tr.selected .spark-mid { stroke: #cce5ff; }
+tr.data-row:focus-visible { outline: 2px solid #0056b3; outline-offset: -2px; }
+
+/* Click detail */
+tr.detail-row, tr.detail-row:hover { background: #f8f9fa; cursor: default; }
+tr.detail-spacer { display: none; }
+tr.detail-row > td { padding: 0; border-left: 1px solid #ddd; }
+.detail { background: #f8f9fa; padding: 16px 20px 18px; border-left: 4px solid #007bff; color: var(--ink); font-size: 14px; }
+.detail-title { margin: 0; font-size: 18px; color: #0056b3; }
+.detail-cat { margin: 2px 0 12px; color: var(--ink-2); font-size: 13px; }
+.detail-grid { display: grid; grid-template-columns: minmax(280px, 1.3fr) minmax(220px, 1fr) minmax(300px, 1.15fr); gap: 18px 32px; align-items: start; }
+.detail h4 { margin: 0 0 6px; font-size: 13px; color: #004085; }
+.detail-values h4:not(:first-child) { margin-top: 12px; }
+.detail .chart { width: 100%; height: auto; max-width: 440px; }
+.chart-note { margin: 6px 0 0; font-size: 11px; color: var(--ink-3); max-width: 52ch; }
+.detail-sum { margin: 12px 0 0; font-size: 13px; color: var(--ink-2); max-width: 50ch; }
+.caution { margin: 14px 0 0; font-size: 12px; color: var(--ink-3); }
+table.year-table { width: 100%; margin: 0; box-shadow: none; font-size: 13px; }
+.year-table th, .year-table td { padding: 5px 8px; text-align: right; white-space: nowrap; border: 1px solid #ddd; }
+.year-table thead th { font-size: 12px; }
+.year-table th[scope="row"], .year-table thead th:first-child { text-align: left; }
+.year-table tr, .year-table tr:nth-child(even) { background: #fff; }
+.year-table tr:hover { background: #fff; cursor: default; }
+.year-table tr.is-now, .year-table tr.is-now:hover { background: #e9f7ff; font-weight: bold; }
+.na { color: var(--ink-3); }
+.badge { display: inline-block; min-width: 30px; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: bold; text-align: center; border: 1px solid #99c7f5; }
+.badge.q-D1 { background: #004085; color: #fff; border-color: #004085; }
+.badge.q-Q1 { background: #0056b3; color: #fff; border-color: #0056b3; }
+.badge.q-Q2 { background: #99c7f5; color: #002752; }
+.badge.q-Q3 { background: #cce5ff; color: #004085; }
+.badge.q-Q4 { background: #fff; color: #004085; }
+
+/* Hover card (mouse only) */
+.hovercard { position: fixed; z-index: 60; width: 336px; padding: 12px 14px 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: var(--shadow); pointer-events: none; font-family: Arial, sans-serif; font-size: 13px; color: var(--ink); }
+.hovercard[hidden] { display: none; }
+.hc-journal { margin: 0; font-weight: bold; font-size: 14px; color: #0056b3; overflow-wrap: anywhere; }
+.hc-cat { margin: 1px 0 0; font-size: 12px; color: var(--ink-2); }
+.hc-title { margin: 10px 0 2px; font-size: 11px; font-weight: bold; color: #004085; }
+.hovercard .chart { width: 100%; height: auto; }
+table.mini-table { width: 100%; margin: 4px 0 0; box-shadow: none; font-size: 12px; background: transparent; }
+.mini-table th, .mini-table td { padding: 3px 6px; text-align: right; border: 0; background: transparent; font-weight: normal; }
+.mini-table tr, .mini-table tr:nth-child(even), .mini-table tr:hover { background: transparent; cursor: default; }
+.mini-table tbody th { text-align: left; color: var(--ink-3); }
+.mini-table thead th { color: #004085; border-bottom: 1px solid #ddd; }
+.mini-table .is-now { color: var(--ink); font-weight: bold; }
+.hc-sum { margin: 8px 0 0; font-size: 12px; color: var(--ink-2); line-height: 1.45; }
+.hc-hint { margin: 6px 0 0; font-size: 11px; color: var(--ink-3); }
+
+/* Charts */
+.chart { display: block; overflow: visible; font-family: Arial, sans-serif; }
+.chart .band-1 { fill: var(--band-1); } .chart .band-2 { fill: var(--band-2); }
+.chart .band-3 { fill: var(--band-3); } .chart .band-4 { fill: var(--band-4); }
+.chart .axis-label { font: 10px Arial, sans-serif; fill: var(--ink-3); }
+.chart .tick { font: 10.5px Arial, sans-serif; fill: var(--ink-3); }
+.chart .tick-now { fill: var(--ink); font-weight: bold; }
+.chart .path-line { fill: none; stroke: #0056b3; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .pt { fill: #0056b3; stroke: #fff; stroke-width: 2; }
+.chart .pt-now { fill: #004085; }
+.chart .pt-label { font: 11px Arial, sans-serif; fill: var(--ink-2); }
+.chart .pt-label-sm { font-size: 10px; }
+.chart .pt-q { font-weight: bold; fill: var(--ink); }
+.chart .pt-rank { font: 9.5px Arial, sans-serif; fill: var(--ink-3); }
+.chart .na-label { font: 10px Arial, sans-serif; fill: var(--ink-3); text-anchor: middle; }
+.chart .grid { stroke: #999; stroke-width: 1; }
+.chart .grid-faint { stroke: #ddd; stroke-dasharray: 2 3; }
+.chart .series-line { fill: none; stroke: #0056b3; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .series-dot { fill: #0056b3; stroke: #fff; stroke-width: 2; }
+
+@media (max-width: 900px) { .detail-grid { grid-template-columns: 1fr; } .hovercard { display: none; } }
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }

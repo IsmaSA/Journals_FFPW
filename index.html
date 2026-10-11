@@ -314,6 +314,7 @@ strong {
 }
 
 </style>
+<link rel="stylesheet" href="css/addon.css">
 </head>
 <body>
     <div class="header">
@@ -348,6 +349,7 @@ strong {
             <th>Ranking</th>
             <th data-column="5" data-order="none">AIS Quartile</th>
             <th>Database</th>
+            <th class="trend-head" title="Position in the category, 2023 to 2025">Trend position</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -403,6 +405,8 @@ strong {
               const newCell = row.insertCell();
               newCell.textContent = cell;
             });
+
+            row.insertCell().className = 'trend-cell'; // filled by js/addon.js
         
             row.addEventListener('click', (event) => {
               if (event.target.type !== 'checkbox') {
@@ -653,7 +657,7 @@ strong {
             .catch(error => {
               console.error('Error loading data:', error);
               document.getElementById('tabla-datos').innerHTML = 
-                '<tr><td colspan="7">Error loading data. Please try refreshing the page.</td></tr>';
+                '<tr><td colspan="10">Error loading data. Please try refreshing the page.</td></tr>';
             });
         });
         
@@ -722,5 +726,6 @@ document.querySelectorAll('.remove-btn').forEach(button => {
 }
 }
       </script>
+      <script type="module" src="js/addon.js"></script>
     </body>
     </html>
