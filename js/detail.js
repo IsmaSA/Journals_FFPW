@@ -1,10 +1,9 @@
 // Components that explain one journal-in-a-category across the years:
-// the quartile badge, the year table, the plain-language summary, the hover card and the
-// expanded detail panel.
+// the quartile badge, the year table, the plain-language summary and the hover card.
 import { h, sr } from './dom.js';
-import { positionChart, valueChart } from './charts.js';
+import { positionChart } from './charts.js';
 import { NA, fmtAis, fmtDelta, fmtIf, fmtRank, fmtTop } from './format.js';
-import { changeFor, siblingsOf, topPct } from './model.js';
+import { changeFor, topPct } from './model.js';
 
 export function badge(label) {
   return h('span', { class: `badge q-${label}` }, label);
@@ -37,8 +36,6 @@ export function trendSentence(model, rec, yi) {
   if (ch.dAis != null) parts.push(`AIS ${fmtAis(j.ais[yi - 1])} → ${fmtAis(j.ais[yi])} (${fmtDelta(ch.dAis, 3)}).`);
   return parts.join(' ');
 }
-
-export const CAUTION = 'Yearly values show how a journal differs between years. With only a few years they are not evidence of a statistical trend.';
 
 /** Values by year. cols: which columns to include. */
 export function yearTable(model, rec, yi, { full = true } = {}) {
@@ -78,45 +75,4 @@ export function buildHoverCard(model, rec, yi) {
     mini,
     h('p', { class: 'hc-sum' }, trendSentence(model, rec, yi)),
     h('p', { class: 'hc-hint' }, 'Click the row for more detail'));
-}
-
-/** Expanded panel placed under the row. */
-export function buildDetail(model, rec, yi, { onToggleCompare, isSelected, canSelect }) {
-  const j = model.journals[rec.j];
-  const aisChart = valueChart(model, j.ais, yi, { w: 230, h: 100, fmt: fmtAis, label: 'Article Influence Score' });
-  const ifChart = valueChart(model, j.if, yi, { w: 230, h: 100, fmt: fmtIf, axisFmt: (v) => v.toFixed(1), label: 'Impact Factor' });
-  const sibs = siblingsOf(model, rec);
-  const cmpBtn = h('button', { type: 'button', class: 'btn btn-quiet', onclick: (ev) => { onToggleCompare(rec.id); ev.currentTarget.textContent = isSelected(rec.id) ? 'Remove from comparison' : 'Add to comparison'; } },
-    isSelected(rec.id) ? 'Remove from comparison' : 'Add to comparison');
-  if (!isSelected(rec.id) && !canSelect()) cmpBtn.disabled = true;
-
-  return h('div', { class: 'detail' },
-    h('div', { class: 'detail-head' },
-      h('div', {},
-        h('h3', { class: 'detail-title' }, j.name),
-        h('p', { class: 'detail-cat' }, model.categories[rec.c])),
-      cmpBtn),
-    h('div', { class: 'detail-grid' },
-      h('section', { class: 'detail-col detail-position', 'aria-label': 'Position in category' },
-        h('h4', {}, 'Position in category'),
-        positionChart(model, rec, yi, { w: 380, h: 170 }),
-        h('p', { class: 'chart-note' }, 'Shaded bands are equal quarters of the category, best at the top. Labels are the faculty quartile for each year; D1 (top decile) is used from 2024. Years are never joined across a gap.')),
-      h('section', { class: 'detail-col detail-values', 'aria-label': 'Impact Factor and Article Influence Score' },
-        h('h4', {}, 'Article Influence Score'),
-        aisChart.el,
-        h('h4', {}, 'Impact Factor'),
-        ifChart.el,
-        (aisChart.truncated || ifChart.truncated) && h('p', { class: 'chart-note' }, 'These axes do not start at zero; read the labelled values.')),
-      h('section', { class: 'detail-col detail-facts', 'aria-label': 'Values by year' },
-        h('h4', {}, 'Values by year'),
-        yearTable(model, rec, yi),
-        h('p', { class: 'detail-sum' }, trendSentence(model, rec, yi)),
-        sibs.length > 0 && h('div', { class: 'siblings' },
-          h('h4', {}, `Also ranked in ${sibs.length} other ${sibs.length === 1 ? 'category' : 'categories'}`),
-          h('ul', {}, sibs.map((s) => {
-            const yk = s.row.map((c, i) => (c ? i : -1)).filter((i) => i >= 0).pop();
-            return h('li', {}, h('span', {}, model.categories[s.c]),
-              yk != null ? h('span', { class: 'sib-q' }, h('span', { class: 'sub-inline' }, String(model.years[yk])), badge(s.row[yk][2])) : null);
-          }))))),
-    h('p', { class: 'caution' }, CAUTION));
 }

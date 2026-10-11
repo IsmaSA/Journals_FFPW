@@ -6,7 +6,7 @@
 import { h } from './dom.js';
 import { buildModel, changeFor } from './model.js';
 import { sparkPosition, positionChart, valueChart } from './charts.js';
-import { buildHoverCard, yearTable, trendSentence, CAUTION } from './detail.js';
+import { buildHoverCard, yearTable, trendSentence } from './detail.js';
 import { fmtAis, fmtIf } from './format.js';
 
 const tbody = document.querySelector('#tabla-datos tbody');
@@ -85,17 +85,14 @@ function buildPanel(rec) {
     h('div', { class: 'detail-grid' },
       h('section', { class: 'detail-col', 'aria-label': 'Position in category' },
         h('h4', {}, 'Trend position in category'),
-        positionChart(model, rec, yi, { w: 380, h: 170 }),
-        h('p', { class: 'chart-note' }, 'Shaded bands are equal quarters of the category, best at the top. Labels are the quartile of each year (D1, the top decile, is used from 2024). Years are never joined across a gap.')),
+        positionChart(model, rec, yi, { w: 380, h: 170 })),
       h('section', { class: 'detail-col detail-values', 'aria-label': 'Impact Factor and Article Influence Score' },
         h('h4', {}, 'Article Influence Score'), aisChart.el,
-        h('h4', {}, 'Impact Factor'), ifChart.el,
-        (aisChart.truncated || ifChart.truncated) ? h('p', { class: 'chart-note' }, 'These axes do not start at zero; read the labelled values.') : null),
+        h('h4', {}, 'Impact Factor'), ifChart.el),
       h('section', { class: 'detail-col', 'aria-label': 'Values by year' },
         h('h4', {}, 'Values by year'),
         yearTable(model, rec, yi),
-        h('p', { class: 'detail-sum' }, trendSentence(model, rec, yi)))),
-    h('p', { class: 'caution' }, CAUTION));
+        h('p', { class: 'detail-sum' }, trendSentence(model, rec, yi)))));
 }
 function toggleDetail(row) {
   const wasOpen = row.classList.contains('is-open');

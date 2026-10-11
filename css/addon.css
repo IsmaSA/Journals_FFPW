@@ -4,9 +4,9 @@
   --ink: #212529; --ink-2: #495057; --ink-3: #6c757d;
   --surface: #fff; --line: #ddd; --line-strong: #999;
   --brand-ink: #0056b3; --brand-wash: #cce5ff;
-  --band-1: #cce5ff; --band-2: #e0efff; --band-3: #eef6ff; --band-4: #f8fbff;
+  --band-1: #e3effc; --band-2: #eef5fd; --band-3: #f5f9fe; --band-4: #fbfdff;
   --font-ui: Arial, sans-serif; --font-serif: Arial, sans-serif;
-  --shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Row additions */
@@ -24,10 +24,10 @@ tr.selected .spark-mid { stroke: #cce5ff; }
 tr.data-row:focus-visible { outline: 2px solid #0056b3; outline-offset: -2px; }
 
 /* Click detail */
-tr.detail-row, tr.detail-row:hover { background: #fff; cursor: default; }
+tr.detail-row, tr.detail-row:hover { background: #f8f9fa; cursor: default; }
 tr.detail-spacer { display: none; }
 tr.detail-row > td { padding: 0; border-left: 1px solid #ddd; }
-.detail { padding: 16px 20px 18px; border-left: 4px solid #007bff; color: var(--ink); font-size: 14px; }
+.detail { background: #f8f9fa; padding: 16px 20px 18px; border-left: 4px solid #007bff; color: var(--ink); font-size: 14px; }
 .detail-title { margin: 0; font-size: 18px; color: #0056b3; }
 .detail-cat { margin: 2px 0 12px; color: var(--ink-2); font-size: 13px; }
 .detail-grid { display: grid; grid-template-columns: minmax(280px, 1.3fr) minmax(220px, 1fr) minmax(300px, 1.15fr); gap: 18px 32px; align-items: start; }
@@ -53,7 +53,7 @@ table.year-table { width: 100%; margin: 0; box-shadow: none; font-size: 13px; }
 .badge.q-Q4 { background: #fff; color: #004085; }
 
 /* Hover card (mouse only) */
-.hovercard { position: fixed; z-index: 60; width: 336px; padding: 12px 14px 10px; background: #fff; border: 1px solid #ccc; border-radius: 6px; box-shadow: var(--shadow); pointer-events: none; font-family: Arial, sans-serif; font-size: 13px; color: var(--ink); }
+.hovercard { position: fixed; z-index: 60; width: 336px; padding: 12px 14px 10px; background: #fff; border: 1px solid #ddd; border-radius: 8px; box-shadow: var(--shadow); pointer-events: none; font-family: Arial, sans-serif; font-size: 13px; color: var(--ink); }
 .hovercard[hidden] { display: none; }
 .hc-journal { margin: 0; font-weight: bold; font-size: 14px; color: #0056b3; overflow-wrap: anywhere; }
 .hc-cat { margin: 1px 0 0; font-size: 12px; color: var(--ink-2); }
