@@ -83,6 +83,7 @@ table.mini-table { width: 100%; margin: 4px 0 0; box-shadow: none; font-size: 12
 .chart .pt-q { font-weight: bold; fill: var(--ink); }
 .chart .pt-rank { font: 9.5px Arial, sans-serif; fill: var(--ink-3); }
 .chart .na-label { font: 10px Arial, sans-serif; fill: var(--ink-3); text-anchor: middle; }
+.chart .d1-line { stroke: #7fa8d6; stroke-width: 1; stroke-dasharray: 3 3; }
 .chart .grid { stroke: #999; stroke-width: 1; }
 .chart .grid-faint { stroke: #ddd; stroke-dasharray: 2 3; }
 .chart .series-line { fill: none; stroke: #0056b3; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }

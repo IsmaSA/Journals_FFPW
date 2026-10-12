@@ -80,8 +80,12 @@ export function positionChart(model, rec, yi, { w = 300, h = 120, compact = fals
 
   for (let q = 0; q < 4; q++) {
     svg.append(svgEl('rect', { x: m.l, y: r1(y(q * 25)), width: innerW, height: r1(innerH / 4), class: `band band-${q + 1}` }));
-    svg.append(text(m.l - 5, r1(y(q * 25 + 12.5)) + 3.5, `Q${q + 1}`, 'axis-label', 'end'));
+    // Q1 is split: the top 10 % is the D1 zone (label used from 2024), so a D1 point visibly sits inside Q1.
+    const mid = q === 0 ? 18 : q * 25 + 12.5;
+    svg.append(text(m.l - 5, r1(y(mid)) + 3.5, `Q${q + 1}`, 'axis-label', 'end'));
   }
+  svg.append(svgEl('line', { x1: m.l, x2: m.l + innerW, y1: r1(y(10)), y2: r1(y(10)), class: 'd1-line' }));
+  svg.append(text(m.l - 5, r1(y(5)) + 3.5, 'D1', 'axis-label', 'end'));
 
   const pts = rec.row.map((c, i) => (c ? { c, i, x: xFor(i, n, m.l, innerW), y: y(topPct(c)) } : null));
   for (const run of runs(pts)) {
