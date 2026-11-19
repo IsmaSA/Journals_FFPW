@@ -257,6 +257,23 @@ th.sortable:hover {
     background-color: #f0f0f0;
 }
 
+/* Category and AIS Quartile suggestions: sized to their own list instead of the table width */
+#category-suggestions, #quartile-suggestions {
+    width: max-content;
+    min-width: 120px;
+    max-width: 340px;
+    max-height: 220px;
+    border: 1px solid #007bff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-weight: normal;
+    text-align: left;
+    color: #212529;
+}
+#category-suggestions:empty, #quartile-suggestions:empty {
+    display: none;
+}
+
 strong {
     color: #0056b3; /* Highlighted blue for strong text */
 }
@@ -343,11 +360,19 @@ strong {
               Journal
             </th>
             <th>Year</th>
-            <th><input class="filter-input" type="text" placeholder="Use exact name">Category</th>
+            <th>
+              <input id="category-filter" class="filter-input" type="text" placeholder="Use exact name" autocomplete="off">
+              <div id="category-suggestions" class="autocomplete-suggestions"></div>
+              Category
+            </th>
             <th class="sortable" data-column="3" data-order="none">Impact Factor</th>
             <th class="sortable" data-column="4" data-order="desc">Article Influence Score</th>
             <th>Ranking</th>
-            <th data-column="5" data-order="none">AIS Quartile</th>
+            <th data-column="5" data-order="none">
+              <input id="quartile-filter" class="filter-input" type="text" placeholder="D1, Q1..." autocomplete="off">
+              <div id="quartile-suggestions" class="autocomplete-suggestions"></div>
+              AIS Quartile
+            </th>
             <th>Database</th>
             <th class="trend-head" title="Position in the category, 2023 to 2025">Trend position</th>
           </tr>
@@ -500,12 +525,14 @@ strong {
       
       function filterData() {
         const journalInput = document.getElementById('journal-filter').value.trim().toLowerCase();
-        const categoryInput = document.querySelectorAll('.filter-input')[1].value.trim().toLowerCase();
+        const categoryInput = document.getElementById('category-filter').value.trim().toLowerCase();
+        const quartileInput = document.getElementById('quartile-filter').value.trim().toLowerCase();
       
         filteredData = originalData.filter(row => {
           const journalMatch = row[0].toLowerCase().includes(journalInput);
           const categoryMatch = categoryInput === "" || row[2].toLowerCase() === categoryInput;
-          return journalMatch && categoryMatch;
+          const quartileMatch = quartileInput === "" || row[6].toLowerCase() === quartileInput;
+          return journalMatch && categoryMatch && quartileMatch;
         });
       
         // Reset pagination and re-render the table
@@ -626,6 +653,41 @@ strong {
             categoryFilter.addEventListener('input', filterData);
           }
           
+          // Suggestions for the Category and AIS Quartile filters
+          function attachSuggestions(inputId, boxId, getOptions) {
+            const input = document.getElementById(inputId);
+            const box = document.getElementById(boxId);
+            if (!input || !box) return;
+            const close = () => { box.innerHTML = ''; };
+            const open = () => {
+              const typed = input.value.trim().toLowerCase();
+              const options = getOptions().filter(o => o.toLowerCase().includes(typed));
+              box.innerHTML = '';
+              options.forEach(option => {
+                const item = document.createElement('div');
+                item.className = 'autocomplete-suggestion';
+                item.textContent = option;
+                // mousedown (not click) so the choice is made before the input loses focus
+                item.addEventListener('mousedown', event => {
+                  event.preventDefault();
+                  input.value = option;
+                  close();
+                  filterData();
+                });
+                box.appendChild(item);
+              });
+            };
+            input.addEventListener('focus', open);
+            input.addEventListener('input', open);
+            input.addEventListener('blur', close);
+            input.addEventListener('keydown', event => {
+              if (event.key === 'Escape' || event.key === 'Enter') close();
+            });
+          }
+          const uniqueSorted = index => [...new Set(originalData.map(row => row[index]))].sort();
+          attachSuggestions('category-filter', 'category-suggestions', () => uniqueSorted(2));
+          attachSuggestions('quartile-filter', 'quartile-suggestions', () => uniqueSorted(6));
+
           const compareBtn = document.getElementById('compare-btn');
           if (compareBtn) {
             compareBtn.addEventListener('click', createComparisonTable);
